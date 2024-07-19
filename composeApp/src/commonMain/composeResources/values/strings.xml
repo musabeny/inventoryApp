@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="app_name" translatable="false">bizil</string>
+
+    <string name="en_language">English</string>
+    <string name="sw_language">Swahili</string>
+
+    <string name="choose_language">Choose Language</string>
+    <string name="sales_Screen">Sales Screen</string>
+
+    <string name="sales">Sales</string>
+    <string name="report">Report</string>
+    <string name="cash_flow">Cashflow</string>
+    <string name="more">More</string>
+    <string name="inventory">Inventory</string>
+    <string name="categories">Categories</string>
+    <string name="btn_sort">SORT</string>
+    <string name="btn_add">ADD</string>
+    <string name="purchase_item">Purchase Items</string>
+    <string name="value_to_start">Enter Value to start</string>
+    <string name="show_only">Show only expired (or) about to expire items</string>
+    <string name="items_about_to_expire">Items about to expire will be shown based on the alerts set</string>
+    <string name="product">Manage Product</string>
+
+    <string name="itemName">Item Name</string>
+    <string name="itemCode">Item Code</string>
+    <string name="itemPrice">Item Price</string>
+    <string name="selectColor">Select Color</string>
+    <string name="barcode">Barcode</string>
+    <string name="save">Save</string>
+    <string name="update">Update</string>
+    <string name="can_not_be_empty">This field can not be empty</string>
+    <string name="can_not_be_zero">Value can not be zero</string>
+    <string name="preview">PREVIEW</string>
+    <string name="item_code_exist">Item code already exist</string>
+    <string name="item_code_must_all_number">Item code must be a number without decimal</string>
+
+    <string name="plus_sign_not_found">Sorry plus sign found</string>
+
+    <string name="track_entry">Track Entry</string>
+    <string name="expiry_date">Expiry Date</string>
+    <string name="expiry_date_alert">Expiry Date Alert</string>
+    <string name="before_days">Before 5 Days</string>
+    <string name="validation_error">Please fill all the require field</string>
+    <string name="product_not_saved">Fail to save product</string>
+    <string name="product_saved_successfully">Product saved successfully</string>
+
+    <!--    inventory screen-->
+    <string name="expire_date_reminder">Expire %1$s</string>
+</resources>
