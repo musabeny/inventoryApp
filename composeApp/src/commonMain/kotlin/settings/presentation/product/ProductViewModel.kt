@@ -86,7 +86,7 @@ class ProductViewModel(
 
 
             }
-            is ProductEvent.ScanBarcode -> TODO()
+            is ProductEvent.ScanBarcode -> {}
             is ProductEvent.SelectColor -> {
                 _state.update {
                     it.copy(productColors = useCase.color() )
@@ -103,7 +103,7 @@ class ProductViewModel(
                     it.copy(productColors = useCase.color())
                 }
             }
-            is ProductEvent.SelectExpireDate -> TODO()
+            is ProductEvent.SelectExpireDate -> {}
             is ProductEvent.DatePickerDialog ->{
                 _state.update {
                     it.copy(showDatePickerDialog = event.show)
