@@ -23,6 +23,7 @@ data class ProductState(
     val productColors:List<ProductColor> = emptyList(),
     val showDatePickerDialog:Boolean = false,
     val priceNotRequired:Boolean = false,
-    val itemCodeFoundError:StringResource? = null
+    val itemCodeFoundError:StringResource? = null,
+
 
     )

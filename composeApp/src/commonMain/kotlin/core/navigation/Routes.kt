@@ -45,4 +45,9 @@ sealed class Routes(
         title = Res.string.product,
         defaultIcon = null
     )
+
+    data object Calender:Routes(route = "calender",
+        title = Res.string.inventory,
+        defaultIcon = null
+    )
 }

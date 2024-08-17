@@ -3,22 +3,21 @@ package core.navigation
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import cashflow.presentation.CashFlowScreen
+import cashflow.presentation.cashFlow.CashFlowScreen
+import cashflow.presentation.cashFlow.CashFlowViewModel
+import cashflow.presentation.customCalender.CalenderScreen
+import cashflow.presentation.customCalender.CalenderViewModel
 import core.util.PRODUCT_ID
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import report.presentation.ReportScreen
 import sales.presentation.SalesScreen
 import settings.presentation.inventory.InventoryScreen
-import settings.presentation.inventory.InventoryState
 import settings.presentation.inventory.InventoryViewModel
 import settings.presentation.product.ProductScreen
 import settings.presentation.product.ProductViewModel
@@ -31,10 +30,11 @@ fun ScreenNavHost(
     navHostController: NavHostController,
     snackBarHost: SnackbarHostState,
     inventoryViewModel: InventoryViewModel,
-    inventoryState: InventoryState
+    updateInventoryState:(Boolean,String)->Unit,
+
 ){
 
-    NavHost(navController = navHostController, startDestination = Routes.Inventory.route){
+    NavHost(navController = navHostController, startDestination = Routes.CashFlow.route){
         composable(route = Routes.Report.route){
             ReportScreen()
         }
@@ -43,8 +43,27 @@ fun ScreenNavHost(
         }
 
         composable(route = Routes.CashFlow.route){
-            CashFlowScreen()
+            val viewModel = koinViewModel<CashFlowViewModel>()
+            val  state = viewModel.state.collectAsState().value
+
+            CashFlowScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                navController = navHostController
+            )
         }
+
+        composable(route = Routes.Calender.route){
+            val viewModel = koinViewModel<CalenderViewModel>()
+            val state = viewModel.state.collectAsState().value
+            CalenderScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                navController = navHostController
+            )
+        }
+
+
         composable(route = Routes.Settings.route){
             val viewModel = koinViewModel<SettingViewModel>()
             val state = viewModel.state.collectAsState().value
@@ -55,13 +74,15 @@ fun ScreenNavHost(
             )
         }
         composable(route = Routes.Inventory.route){
-//            val viewModel = koinViewModel<InventoryViewModel>()
-//            val state = inventoryViewModel.state.collectAsState().value
+            val state = inventoryViewModel.state.collectAsState().value
+            updateInventoryState(state.showSearchIcon,state.searchText)
+            val uiEvent = inventoryViewModel.uiEvent
             InventoryScreen(
-                state = inventoryState,
+                state = state,
                 onEvent = inventoryViewModel::onEvent,
                 navController = navHostController,
-
+                uiEvent = uiEvent,
+                snackBarHost =snackBarHost
             )
         }
 

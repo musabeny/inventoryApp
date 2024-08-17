@@ -139,6 +139,7 @@ class ProductViewModel(
             is ProductEvent.FindItemCode -> findItemCode(event.itemCode,event.userSearch)
            is ProductEvent.LastItemCode -> lastItemCode()
             is ProductEvent.GetProductById -> getProductById(event.productId)
+            else ->{}
         }
     }
 

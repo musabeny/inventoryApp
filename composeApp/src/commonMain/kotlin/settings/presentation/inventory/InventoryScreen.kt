@@ -10,16 +10,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,9 +36,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import core.util.UiEvent
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import settings.domain.enums.InventoryTabs
+import settings.presentation.inventory.component.CategoriesTab
 import settings.presentation.inventory.component.InventoryTab
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -42,7 +49,9 @@ import settings.presentation.inventory.component.InventoryTab
 fun InventoryScreen(
     state: InventoryState,
     onEvent:(InventoryEvent) -> Unit,
-    navController: NavHostController
+    navController: NavHostController,
+    uiEvent: Flow<UiEvent>,
+    snackBarHost: SnackbarHostState,
 ){
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { InventoryTabs.entries.size})
@@ -53,6 +62,22 @@ fun InventoryScreen(
     var tabHeight by remember {
         mutableStateOf(0.dp)
     }
+
+    LaunchedEffect(true){
+        uiEvent.collect{event ->
+            when(event){
+                is UiEvent.ShowSnackBar ->{
+                    snackBarHost.showSnackbar(event.message)
+                }
+                is UiEvent.Navigate ->{
+                    navController.popBackStack()
+                }
+                else ->{}
+            }
+
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,6 +115,7 @@ fun InventoryScreen(
                     onClick = {
                         scope.launch {
                             pagerState.animateScrollToPage(inventoryTabs.ordinal)
+                            onEvent(InventoryEvent.CurrentPage(pagerState.currentPage))
                         }
                     }
                 ) {
@@ -134,7 +160,20 @@ fun InventoryScreen(
                         )
                     }
                     1->{
-                        Text(text = "categories")}
+                        CategoriesTab(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            onEvent = onEvent,
+                            showBottomSheet = state.showBottomSheet,
+                            colors = state.productColors,
+                            selectedProductColor = state.selectedProductColor,
+                            categoryName = state.categoryName,
+                            categoryError = state.categoryError,
+                            categories = state.categories,
+                            category = state.selectedCategory
+
+                        )
+                    }
                     2->{ Text(text = "purchase") }
                 }
 

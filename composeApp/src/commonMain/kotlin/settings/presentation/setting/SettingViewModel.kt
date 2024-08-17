@@ -33,6 +33,7 @@ class SettingViewModel(
            is SettingEvent.NavigateTo ->{
                 event.navController.navigate(event.route)
             }
+            else ->{}
         }
     }
 }

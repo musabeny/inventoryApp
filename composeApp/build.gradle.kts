@@ -31,7 +31,12 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+//            linkerOpts.add("-lsqlite3")
         }
+    }
+
+    sourceSets.commonMain {
+        kotlin.srcDir("build/generated/ksp/metadata")
     }
     
     sourceSets {
@@ -110,19 +115,28 @@ room {
 }
 
 dependencies {
-    add("kspAndroid", libs.room.compiler)
+implementation(libs.androidx.media3.common)
+    //    add("kspAndroid", libs.room.compiler)
 //    add("kspIosSimulatorArm64", libs.room.compiler)
 //    add("kspIosX64", libs.room.compiler)
 //    add("kspIosArm64",libs.room.compiler)
 
 
 //    ksp(libs.room.compiler)
-//    add("kspCommonMainMetadata", libs.room.compiler)
+    //og below
+    add("kspCommonMainMetadata", libs.room.compiler)
 
 //    add("kspAndroid", libs.room.compiler)
 //    add("kspIosSimulatorArm64", libs.room.compiler)
 //    add("kspIosX64", libs.room.compiler)
 //    add("kspIosArm64", libs.room.compiler)
+}
+
+//Room step6 part 2 make all source sets to depend on kspCommonMainKotlinMetadata:  Update: https://issuetracker.google.com/u/0/issues/342905180
+tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata" ) {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
 }
 
 

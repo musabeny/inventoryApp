@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -75,7 +77,8 @@ fun ScreenNavigation(){
         Routes.CashFlow,
         Routes.Settings,
         Routes.Inventory,
-        Routes.Product
+        Routes.Product,
+        Routes.Calender
     )
     val showNavigationIcon = listOf(
         Routes.Inventory,
@@ -91,11 +94,13 @@ fun ScreenNavigation(){
     val snackBarHost = remember{ SnackbarHostState() }
 
     val inventoryViewModel = koinViewModel<InventoryViewModel>()
-    val inventoryState = inventoryViewModel.state.collectAsState().value
+    var showSearchIcon by remember { mutableStateOf(true) }
+    var searchText by remember { mutableStateOf("") }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             if(currentDestination in topAppBarScreen.map { it.route } ){
+
                if(currentDestination in showTitleNavigation.map { it.route }){
                    CenterAlignedTopAppBar(
                        title = {
@@ -117,6 +122,9 @@ fun ScreenNavigation(){
                }else{
                    TopAppBar(
                        title = {
+                           if(currentDestination == Routes.Calender.route){
+                               return@TopAppBar
+                           }
                            if(currentDestination !in showNavigationIcon.map { it.route }){
                                Icon(
                                    painter = painterResource(Res.drawable.calculate),
@@ -130,7 +138,7 @@ fun ScreenNavigation(){
                                       .fillMaxSize(),
                                    contentAlignment = Alignment.CenterEnd
                                ){
-                                   if(inventoryState.showSearchIcon){
+                                   if(showSearchIcon){
                                        Icon(
                                            modifier = Modifier.clickable {
                                                inventoryViewModel.onEvent(InventoryEvent.ShowSearchIcon)
@@ -151,7 +159,7 @@ fun ScreenNavigation(){
                                            onValue = {
                                                inventoryViewModel.onEvent(InventoryEvent.EnterSearchText(it))
                                            },
-                                           value = inventoryState.searchText
+                                           value = searchText
                                        )
                                    }
                                }
@@ -161,7 +169,21 @@ fun ScreenNavigation(){
                            }
 
                        },
-                       actions = {},
+                       actions = {
+                           if(currentDestination == Routes.Calender.route){
+                               Icon(
+                                   modifier = Modifier
+                                       .size(32.dp)
+                                       .clickable {
+                                          navigation.navigateUp()
+                                       },
+                                   imageVector = Icons.Filled.Close,
+                                   contentDescription = "close icon",
+                                   tint = MaterialTheme.colorScheme.onPrimary
+                               )
+                           }
+
+                       },
                        modifier = Modifier.fillMaxWidth(),
                        colors = TopAppBarDefaults.topAppBarColors().copy(
                            containerColor = if(currentDestination in showNavigationIcon.map { it.route }) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary
@@ -201,7 +223,10 @@ fun ScreenNavigation(){
                 navHostController = navigation,
                 snackBarHost = snackBarHost,
                 inventoryViewModel = inventoryViewModel,
-                inventoryState = inventoryState
+                updateInventoryState = {searchIcon,text ->
+                     showSearchIcon = searchIcon
+                    searchText = text
+                }
             )
         }
 

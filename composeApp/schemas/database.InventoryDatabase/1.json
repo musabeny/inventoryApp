@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "841bfd93c6557e6355300609f31da1d4",
+    "identityHash": "93bb4c28eba75e6415cad2269f118dda",
     "entities": [
       {
         "tableName": "ProductEntity",
@@ -111,11 +111,86 @@
           "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_ProductFts_AFTER_UPDATE AFTER UPDATE ON `ProductEntity` BEGIN INSERT INTO `ProductFts`(`docid`, `name`) VALUES (NEW.`rowid`, NEW.`name`); END",
           "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_ProductFts_AFTER_INSERT AFTER INSERT ON `ProductEntity` BEGIN INSERT INTO `ProductFts`(`docid`, `name`) VALUES (NEW.`rowid`, NEW.`name`); END"
         ]
+      },
+      {
+        "tableName": "CategoryEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `colorId` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colorId",
+            "columnName": "colorId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_CategoryEntity_name",
+            "unique": true,
+            "columnNames": [
+              "name"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_CategoryEntity_name` ON `${TABLE_NAME}` (`name`)"
+          }
+        ]
+      },
+      {
+        "tableName": "CategoryFts",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`name` TEXT NOT NULL, content=`CategoryEntity`)",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "rowid"
+          ]
+        },
+        "ftsVersion": "FTS4",
+        "ftsOptions": {
+          "tokenizer": "simple",
+          "tokenizerArgs": [],
+          "contentTable": "CategoryEntity",
+          "languageIdColumnName": "",
+          "matchInfo": "FTS4",
+          "notIndexedColumns": [],
+          "prefixSizes": [],
+          "preferredOrder": "ASC"
+        },
+        "contentSyncTriggers": [
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_CategoryFts_BEFORE_UPDATE BEFORE UPDATE ON `CategoryEntity` BEGIN DELETE FROM `CategoryFts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_CategoryFts_BEFORE_DELETE BEFORE DELETE ON `CategoryEntity` BEGIN DELETE FROM `CategoryFts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_CategoryFts_AFTER_UPDATE AFTER UPDATE ON `CategoryEntity` BEGIN INSERT INTO `CategoryFts`(`docid`, `name`) VALUES (NEW.`rowid`, NEW.`name`); END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_CategoryFts_AFTER_INSERT AFTER INSERT ON `CategoryEntity` BEGIN INSERT INTO `CategoryFts`(`docid`, `name`) VALUES (NEW.`rowid`, NEW.`name`); END"
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '841bfd93c6557e6355300609f31da1d4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '93bb4c28eba75e6415cad2269f118dda')"
     ]
   }
 }

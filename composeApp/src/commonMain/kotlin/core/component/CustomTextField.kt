@@ -30,7 +30,8 @@ fun CustomTextField(
     errorMessage: StringResource?,
     value:String = "",
     keyboardType: KeyboardType = KeyboardType.Text,
-    showTrailingIcon:Boolean = false
+    showTrailingIcon:Boolean = false,
+    hint:StringResource? = null
 ){
     TextField(
         modifier = modifier,
@@ -40,10 +41,18 @@ fun CustomTextField(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             errorIndicatorColor = Color.Transparent,
-//            errorContainerColor = Color.Transparent,
-//            cursorColor = Color.Transparent,
-//            errorCursorColor = Color.Transparent
         ),
+        placeholder = {
+            if(hint != null){
+                Text(
+                    text = stringResource(hint),
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color.Gray.copy(alpha = 0.7f),
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            }
+
+        },
         trailingIcon = {
            if(showTrailingIcon){
                Icon(

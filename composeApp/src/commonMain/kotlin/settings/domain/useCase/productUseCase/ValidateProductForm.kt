@@ -13,7 +13,6 @@ import settings.domain.enums.ProductForm
 class ValidateProductForm {
 
     operator fun invoke(form: ProductForm, input:String):StringResource?{
-       val res =  input.toCharArray().all { it.isDigit() }
         return when(form){
             ProductForm.Code ->{
                if(input.isEmpty()){

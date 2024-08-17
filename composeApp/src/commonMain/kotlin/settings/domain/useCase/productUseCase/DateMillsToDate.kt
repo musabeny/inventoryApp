@@ -4,14 +4,13 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeComponents
-import kotlinx.datetime.format.DateTimeFormat
 import kotlinx.datetime.toLocalDateTime
 
 class DateMillsToDate {
-    operator fun invoke(date:Long): LocalDate {
+    operator fun invoke(date:Long): String {
         val instant = Instant.fromEpochMilliseconds(date)
-        return instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
+
+       val format =instant.toLocalDateTime(TimeZone.currentSystemDefault())
+        return "${format.dayOfMonth} / ${format.monthNumber} / ${format.year}"
     }
 }

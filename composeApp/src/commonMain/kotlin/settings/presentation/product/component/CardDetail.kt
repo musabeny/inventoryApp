@@ -24,7 +24,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import core.component.CustomTextField
 import inventoryapp.composeapp.generated.resources.Res
@@ -94,15 +96,27 @@ fun CardDetail(
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        CustomTextField(
-                            modifier = Modifier.weight(1f),
-                            onValue = {
-                                onEvent(ProductEvent.EnterItemPrice(it))
-                            },
-                            errorMessage = errorMessage,
-                            value = value,
-                            keyboardType = KeyboardType.Number
-                        )
+                        if(priceNotRequired){
+                            Text(
+                                modifier = Modifier.weight(1f),
+                                text = "?",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                        }else{
+                            CustomTextField(
+                                modifier = Modifier.weight(1f),
+                                onValue = {
+                                    onEvent(ProductEvent.EnterItemPrice(it))
+                                },
+                                errorMessage = errorMessage,
+                                value = value,
+                                keyboardType = KeyboardType.Number
+                            )
+                        }
+
                         Row(
                             modifier = Modifier.weight(2f),
                             verticalAlignment = Alignment.CenterVertically

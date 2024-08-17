@@ -47,4 +47,22 @@
 
     <!--    inventory screen-->
     <string name="expire_date_reminder">Expire %1$s</string>
+    <string name="enter_category_name">Enter Categories Name</string>
+    <string name="category_name_required"> Categories name can not be empty</string>
+    <string name="choose_color">Choose Color</string>
+    <string name="fail_to_insert_category_name">Fail to save category name</string>
+
+<!--    Calender Screen-->
+    <string name="today">TODAY</string>
+    <string name="yesterday">YESTERDAY</string>
+    <string name="this_week">THIS WEEK</string>
+    <string name="last_week">LAST WEEK</string>
+    <string name="choose">Choose</string>
+
+    <!--    CashFlow  Screen-->
+    <string name="income_expense">Income/Expense</string>
+    <string name="income">Income</string>
+    <string name="purchase">Purchase</string>
+    <string name="no_item">No item to show here</string>
+    <string name="add_purchase">Add Purchase</string>
 </resources>

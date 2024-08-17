@@ -16,6 +16,8 @@ class ProductRepositoryImp(
     override suspend fun insertOrUpdateProduct(product: Product):Int {
          if(product.id == null){
           val insertResult =   db.productDao().insertProduct(product.toProductEntity())
+             println("insertResult $insertResult")
+
              return if(insertResult > 0){
                  1
              }else{
