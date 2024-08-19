@@ -62,7 +62,15 @@
     <!--    CashFlow  Screen-->
     <string name="income_expense">Income/Expense</string>
     <string name="income">Income</string>
+    <string name="incomeWithPlus">+ Income</string>
     <string name="purchase">Purchase</string>
     <string name="no_item">No item to show here</string>
     <string name="add_purchase">Add Purchase</string>
+    <string name="expense">Expense</string>
+    <string name="expenseWithMinus">- Expense</string>
+    <string name="selectCategory">Select Category</string>
+    <string name="enter_amount">Enter Amount</string>
+    <string name="note">Note</string>
+    <string name="add_income">Add Income</string>
+    <string name="add_new">Add New</string>
 </resources>

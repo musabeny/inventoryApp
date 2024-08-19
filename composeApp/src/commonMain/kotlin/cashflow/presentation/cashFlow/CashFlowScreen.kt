@@ -36,15 +36,12 @@ import androidx.navigation.NavController
 import cashflow.domain.enums.CashFlowTabs
 import cashflow.domain.mapper.toDateMonthYearFormat
 import cashflow.presentation.cashFlow.component.DateRange
+import cashflow.presentation.cashFlow.component.IncomeExpensePage
 import core.util.DATE_RANGE
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.toLocalDate
 import org.jetbrains.compose.resources.stringResource
 import settings.domain.enums.InventoryTabs
-import settings.presentation.inventory.InventoryEvent
-import settings.presentation.inventory.component.CategoriesTab
-import settings.presentation.inventory.component.InventoryTab
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -161,7 +158,14 @@ fun CashFlowScreen(
                 ){
                     when(it){
                         0 -> {
-                            Text(text = "Income/ expense")
+                            IncomeExpensePage(
+                                categories = state.categories,
+                                onEvent = onEvent,
+                                selectedCategory = state.selectedCategory,
+                                showIncomeForm = state.showIncomeForm,
+                                showCategoryDropDown = state.showCategoryDropDown
+                            )
+
                         }
                         1->{ Text(text = "Purchase") }
                     }

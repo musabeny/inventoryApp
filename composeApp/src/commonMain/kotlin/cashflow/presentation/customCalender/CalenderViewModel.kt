@@ -17,6 +17,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.todayIn
+import settings.domain.repository.CategoryRepository
 
 class CalenderViewModel(
    private val useCases: CashFlowUseCases
