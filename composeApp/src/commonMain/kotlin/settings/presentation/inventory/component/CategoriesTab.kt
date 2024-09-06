@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import core.component.AddCategory
 import core.component.CustomTextField
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.check_circle
@@ -100,23 +101,15 @@ fun CategoriesTab(
            }
        }
 
-       if(showBottomSheet){
-           ModalBottomSheet(
-               onDismissRequest = {
-                   onEvent(InventoryEvent.ShowBottomSheet(false))
-               }
-           ){
-             CreateCategories(
-                 colors = colors,
-                 onEvent = onEvent,
-                 selectedProductColor = selectedProductColor,
-                 categoryName = categoryName,
-                 categoryError = categoryError,
-                 category = category
-             )
-           }
-       }
-
+       AddCategory(
+           showBottomSheet = showBottomSheet,
+           onEvent = onEvent,
+           colors = colors,
+           selectedProductColor = selectedProductColor,
+           categoryName = categoryName,
+           categoryError = categoryError,
+           category = category
+       )
    }
 }
 
@@ -174,70 +167,3 @@ fun CategoryItem(
 }
 
 
-@Composable
-fun CreateCategories(
-    colors:List<ProductColor>,
-    onEvent: (InventoryEvent) -> Unit,
-    selectedProductColor: ProductColor?,
-    categoryName:String,
-    categoryError: StringResource?,
-    category:CategoryWithColor?
-){
-    Column(
-        modifier = Modifier.padding(8.dp)
-    ) {
-
-      CustomTextField(
-          modifier = Modifier
-              .fillMaxWidth(),
-          onValue = {
-            onEvent(InventoryEvent.EnterCategoryName(it))
-          },
-          value =  categoryName,
-          errorMessage = categoryError,
-          hint = Res.string.enter_category_name
-      )
-      Text(
-          text = stringResource(Res.string.choose_color),
-          style = MaterialTheme.typography.labelSmall,
-          color = Color.Gray
-      )
-
-       LazyRow(
-           modifier = Modifier.fillMaxWidth(),
-           horizontalArrangement = Arrangement.SpaceAround
-       ) {
-         items(colors){productColor ->
-             Box(
-                 modifier = Modifier
-                     .size(48.dp)
-                     .background(productColor.color, shape = RoundedCornerShape(8.dp))
-                     .clickable {
-                         onEvent(InventoryEvent.SelectColor(productColor))
-                     },
-                 contentAlignment = Alignment.Center
-             ){
-                 Icon(
-                     modifier = Modifier.size(40.dp),
-                     painter = painterResource(Res.drawable.check_circle),
-                     contentDescription = "check mark",
-                     tint = Color.White.copy(alpha = if(productColor == selectedProductColor)1f else 0f)
-                 )
-             }
-         }
-       }
-
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            onClick = {
-                onEvent(InventoryEvent.SaveCategories)
-            },
-            shape = RoundedCornerShape(8.dp)
-        ){
-            Text(text = stringResource(if(category == null)Res.string.save else Res.string.update))
-        }
-
-    }
-}

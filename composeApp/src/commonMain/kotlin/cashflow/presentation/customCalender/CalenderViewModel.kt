@@ -2,10 +2,8 @@ package cashflow.presentation.customCalender
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import cashflow.domain.mapper.isAfter
-import cashflow.domain.mapper.iterator
-import cashflow.domain.model.CustomDate
-import cashflow.domain.model.FullDate
+import cashflow.data.mapper.iterator
+import cashflow.domain.model.CashFlowDate.FullDate
 import cashflow.domain.usecase.CashFlowUseCases
 import core.util.DATE_RANGE
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +15,6 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.todayIn
-import settings.domain.repository.CategoryRepository
 
 class CalenderViewModel(
    private val useCases: CashFlowUseCases

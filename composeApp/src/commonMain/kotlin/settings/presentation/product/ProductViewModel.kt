@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import settings.data.mapper.toLocalDate
 import settings.domain.enums.ProductForm
 import settings.domain.model.product.Product
@@ -166,6 +168,7 @@ class ProductViewModel(
             _state.update {
                 it.copy(validationSuccess = !validation)
             }
+
 
             if(_state.value.validationSuccess){
                 val product = Product(

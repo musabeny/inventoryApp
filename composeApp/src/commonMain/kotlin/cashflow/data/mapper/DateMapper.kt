@@ -1,12 +1,29 @@
-package cashflow.domain.mapper
+package cashflow.data.mapper
 
-import androidx.compose.ui.text.toLowerCase
+import cashflow.domain.enums.DaysOfDate
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
 import kotlinx.datetime.plus
+import kotlinx.datetime.todayIn
 
 fun LocalDate.formatToMonthYear():String{
     return "${this.month.name.lowercase().replaceFirstChar { it.uppercaseChar() }}, ${this.year}"
+}
+
+fun LocalDate.formatToMonthYearWithSpace():String{
+    return "${this.month.name.lowercase().replaceFirstChar { it.uppercaseChar() }} ${this.year}"
+}
+
+fun LocalDate.daysOfDate():DaysOfDate{
+    val now = Clock.System.todayIn(TimeZone.currentSystemDefault())
+    return when(this){
+        now -> DaysOfDate.TODAY
+        now.minus(DatePeriod(days = 1)) -> DaysOfDate.YESTERDAY
+        else  -> DaysOfDate.DISPLAYDATE
+    }
 }
 
 fun LocalDate.isAfter( localDate: LocalDate):Boolean{

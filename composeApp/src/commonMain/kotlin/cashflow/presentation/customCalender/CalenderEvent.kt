@@ -1,7 +1,7 @@
 package cashflow.presentation.customCalender
 
 import androidx.navigation.NavController
-import cashflow.domain.model.FullDate
+import cashflow.domain.model.CashFlowDate.FullDate
 
 sealed interface CalenderEvent {
     data object GetCalenderData:CalenderEvent

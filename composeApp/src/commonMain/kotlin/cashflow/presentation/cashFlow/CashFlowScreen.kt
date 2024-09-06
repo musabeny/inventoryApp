@@ -34,21 +34,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cashflow.domain.enums.CashFlowTabs
-import cashflow.domain.mapper.toDateMonthYearFormat
+import cashflow.data.mapper.toDateMonthYearFormat
+import cashflow.domain.enums.UserFilterType
 import cashflow.presentation.cashFlow.component.DateRange
+import cashflow.presentation.cashFlow.component.FilterSheet
 import cashflow.presentation.cashFlow.component.IncomeExpensePage
+import core.component.AddCategory
 import core.util.DATE_RANGE
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
 import settings.domain.enums.InventoryTabs
+import settings.presentation.inventory.InventoryEvent
+import settings.presentation.inventory.InventoryState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CashFlowScreen(
     state: CashFlowState,
     onEvent: (CashFlowEvent) -> Unit,
-    navController: NavController
+    navController: NavController,
+    inventoryEvent: (InventoryEvent) -> Unit,
+    inventoryState:InventoryState
 ){
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { InventoryTabs.entries.size})
@@ -69,6 +76,7 @@ fun CashFlowScreen(
             val (start,end) = range.split(",").map { LocalDate.parse(it) }
             onEvent(CashFlowEvent.SelectedDateRange(start..end))
         }
+
     }
     Box(
         modifier = Modifier
@@ -121,7 +129,6 @@ fun CashFlowScreen(
                         onClick = {
                             scope.launch {
                                 pagerState.animateScrollToPage(cashFlowTabs.ordinal)
-//                                onEvent(InventoryEvent.CurrentPage(pagerState.currentPage))
                             }
                         }
                     ) {
@@ -163,8 +170,21 @@ fun CashFlowScreen(
                                 onEvent = onEvent,
                                 selectedCategory = state.selectedCategory,
                                 showIncomeForm = state.showIncomeForm,
-                                showCategoryDropDown = state.showCategoryDropDown
-                            )
+                                showCategoryDropDown = state.showCategoryDropDown,
+                                amount = state.amount ,
+                                note = state.note,
+                                today = state.today,
+                                incomeExpenseType = state.incomeExpenseType,
+                                viewType = state.vewType,
+                                groupedByDate = state.incomeExpenses,
+                                totalIncome = state.totalIncome,
+                                totalExpense = state.totalExpense,
+                                incomeExpensesGroup = state.incomeExpensesGroup
+                            ){
+                                inventoryEvent(InventoryEvent.ShowBottomSheet(true))
+                                onEvent(CashFlowEvent.ShowCategoryDropDown(false))
+                                onEvent(CashFlowEvent.ShowIncomeExpenseForm(false,state.incomeExpenseType))
+                            }
 
                         }
                         1->{ Text(text = "Purchase") }
@@ -176,6 +196,26 @@ fun CashFlowScreen(
 
 
         }
+        AddCategory(
+            showBottomSheet = inventoryState.showBottomSheet,
+            onEvent = inventoryEvent,
+            colors = inventoryState.productColors,
+            selectedProductColor = inventoryState.selectedProductColor,
+            categoryName = inventoryState.categoryName,
+            categoryError = inventoryState.categoryError,
+            category = inventoryState.selectedCategory
+        )
+        FilterSheet(
+            modifier = Modifier.fillMaxWidth(),
+            showSheet = state.showFilterSheet,
+            onEvent = onEvent,
+            filters = when(state.userFilterType){
+               UserFilterType.ENTRY -> state.entryType
+                UserFilterType.MEMBERS -> emptyList()
+                UserFilterType.INCOME -> state.incomeCategory
+                UserFilterType.EXPENSE -> state.expenseCategory
+            }
+        )
 
     }
 }

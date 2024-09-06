@@ -53,8 +53,8 @@
     <string name="fail_to_insert_category_name">Fail to save category name</string>
 
 <!--    Calender Screen-->
-    <string name="today">TODAY</string>
-    <string name="yesterday">YESTERDAY</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
     <string name="this_week">THIS WEEK</string>
     <string name="last_week">LAST WEEK</string>
     <string name="choose">Choose</string>
@@ -73,4 +73,15 @@
     <string name="note">Note</string>
     <string name="add_income">Add Income</string>
     <string name="add_new">Add New</string>
+    <string name="money_hint">%1$s 0.00</string>
+    <string name="add_expense">Add Expense</string>
+    <string name="group">Group</string>
+    <string name="filter">Filter</string>
+    <string name="list">List</string>
+    <string name="clear_all">Clear All</string>
+    <string name="all">All</string>
+    <string name="entry_type">Entry Type</string>
+    <string name="members">Members</string>
+    <string name="income_category">Income Category</string>
+    <string name="expense_category">Expense Category</string>
 </resources>

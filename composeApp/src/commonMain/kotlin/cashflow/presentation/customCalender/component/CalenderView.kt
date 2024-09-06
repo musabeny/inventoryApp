@@ -18,9 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import cashflow.domain.mapper.formatToMonthYear
-import cashflow.domain.model.CustomDate
-import cashflow.domain.model.FullDate
+import cashflow.data.mapper.formatToMonthYear
+import cashflow.domain.model.CashFlowDate.CustomDate
+import cashflow.domain.model.CashFlowDate.FullDate
 import cashflow.presentation.customCalender.CalenderEvent
 import cashflow.presentation.customCalender.ContentItem
 import cashflow.presentation.customCalender.DaysWeekItem

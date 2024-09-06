@@ -1,6 +1,7 @@
 package core.util
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionContext
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.can_not_be_empty
 import org.jetbrains.compose.resources.StringResource
@@ -16,9 +17,11 @@ sealed interface UiText{
     fun asString():String{
        return when(this){
            is DynamicText -> value
-           is StringResources -> stringResource(resource = res)
+           is StringResources -> stringResource( res)
        }
     }
+
+
 
 
 

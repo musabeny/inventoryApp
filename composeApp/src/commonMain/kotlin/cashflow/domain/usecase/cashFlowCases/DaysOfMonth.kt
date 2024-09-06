@@ -1,15 +1,14 @@
 package cashflow.domain.usecase.cashFlowCases
 
-import cashflow.domain.model.CustomDate
-import cashflow.domain.model.FullDate
-import cashflow.domain.model.YearMonth
+import cashflow.domain.model.CashFlowDate.CustomDate
+import cashflow.domain.model.CashFlowDate.FullDate
+import cashflow.domain.model.CashFlowDate.YearMonth
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
-import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
 
 

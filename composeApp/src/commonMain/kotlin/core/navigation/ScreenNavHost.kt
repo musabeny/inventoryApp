@@ -8,6 +8,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import cashflow.presentation.cashFlow.CashFlowEvent
 import cashflow.presentation.cashFlow.CashFlowScreen
 import cashflow.presentation.cashFlow.CashFlowViewModel
 import cashflow.presentation.customCalender.CalenderScreen
@@ -17,10 +18,12 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import report.presentation.ReportScreen
 import sales.presentation.SalesScreen
+import settings.presentation.inventory.InventoryEvent
 import settings.presentation.inventory.InventoryScreen
 import settings.presentation.inventory.InventoryViewModel
 import settings.presentation.product.ProductScreen
 import settings.presentation.product.ProductViewModel
+import settings.presentation.setting.SettingEvent
 import settings.presentation.setting.SettingScreen
 import settings.presentation.setting.SettingViewModel
 
@@ -45,11 +48,13 @@ fun ScreenNavHost(
         composable(route = Routes.CashFlow.route){
             val viewModel = koinViewModel<CashFlowViewModel>()
             val  state = viewModel.state.collectAsState().value
-
+            val inventoryState = inventoryViewModel.state.collectAsState().value
             CashFlowScreen(
                 state = state,
                 onEvent = viewModel::onEvent,
-                navController = navHostController
+                navController = navHostController,
+                inventoryEvent = inventoryViewModel::onEvent,
+                inventoryState = inventoryState
             )
         }
 
@@ -67,6 +72,7 @@ fun ScreenNavHost(
         composable(route = Routes.Settings.route){
             val viewModel = koinViewModel<SettingViewModel>()
             val state = viewModel.state.collectAsState().value
+
             SettingScreen(
                 state = state,
                 onEvent = viewModel::onEvent,

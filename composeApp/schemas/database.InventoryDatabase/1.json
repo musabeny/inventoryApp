@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "93bb4c28eba75e6415cad2269f118dda",
+    "identityHash": "568de1a3e22073d4b5babc645e64084e",
     "entities": [
       {
         "tableName": "ProductEntity",
@@ -186,11 +186,57 @@
           "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_CategoryFts_AFTER_UPDATE AFTER UPDATE ON `CategoryEntity` BEGIN INSERT INTO `CategoryFts`(`docid`, `name`) VALUES (NEW.`rowid`, NEW.`name`); END",
           "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_CategoryFts_AFTER_INSERT AFTER INSERT ON `CategoryEntity` BEGIN INSERT INTO `CategoryFts`(`docid`, `name`) VALUES (NEW.`rowid`, NEW.`name`); END"
         ]
+      },
+      {
+        "tableName": "IncomeExpenseEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `categoryId` INTEGER NOT NULL, `amount` REAL NOT NULL, `note` TEXT, `isIncomeOrExpense` INTEGER NOT NULL, `dateCreated` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "categoryId",
+            "columnName": "categoryId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "amount",
+            "columnName": "amount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isIncomeOrExpense",
+            "columnName": "isIncomeOrExpense",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateCreated",
+            "columnName": "dateCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '93bb4c28eba75e6415cad2269f118dda')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '568de1a3e22073d4b5babc645e64084e')"
     ]
   }
 }

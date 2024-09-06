@@ -1,4 +1,4 @@
-package cashflow.domain.model
+package cashflow.domain.model.CashFlowDate
 
 import kotlinx.datetime.LocalDate
 

@@ -18,6 +18,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -31,7 +33,11 @@ fun CustomTextField(
     value:String = "",
     keyboardType: KeyboardType = KeyboardType.Text,
     showTrailingIcon:Boolean = false,
-    hint:StringResource? = null
+    hint:StringResource? = null,
+    parameter:String?=null,
+    hintStyle: TextStyle = MaterialTheme.typography.headlineSmall,
+    textColor: Color = Color.Black,
+    textSize: TextUnit = 18.sp
 ){
     TextField(
         modifier = modifier,
@@ -45,10 +51,10 @@ fun CustomTextField(
         placeholder = {
             if(hint != null){
                 Text(
-                    text = stringResource(hint),
+                    text =if(parameter==null) stringResource(hint) else stringResource(hint,parameter),
                     fontWeight = FontWeight.ExtraBold,
                     color = Color.Gray.copy(alpha = 0.7f),
-                    style = MaterialTheme.typography.headlineSmall
+                    style = hintStyle
                 )
             }
 
@@ -68,9 +74,9 @@ fun CustomTextField(
         value = value,
         textStyle = TextStyle(
             background = MaterialTheme.colorScheme.onPrimary,
-            color = Color.Black,
+            color = textColor,
             fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
+            fontSize = textSize
         ),
         onValueChange = onValue,
         supportingText = {
