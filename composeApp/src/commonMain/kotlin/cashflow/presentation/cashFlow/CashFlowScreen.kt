@@ -214,7 +214,8 @@ fun CashFlowScreen(
                 UserFilterType.MEMBERS -> emptyList()
                 UserFilterType.INCOME -> state.incomeCategory
                 UserFilterType.EXPENSE -> state.expenseCategory
-            }
+            },
+            selectedFilterType = state.userFilterType
         )
 
     }

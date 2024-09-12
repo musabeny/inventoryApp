@@ -1,14 +1,18 @@
 package cashflow.presentation.cashFlow.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -23,6 +27,7 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,7 +52,8 @@ fun FilterSheet(
     modifier: Modifier,
     showSheet:Boolean,
     onEvent: (CashFlowEvent)-> Unit,
-    filters: List<FilterType>
+    filters: List<FilterType>,
+    selectedFilterType: UserFilterType
 ){
     if(showSheet){
         ModalBottomSheet(
@@ -69,7 +75,8 @@ fun FilterSheet(
              BodyFilter(
                  modifier = Modifier.fillMaxWidth(),
                  onEvent = onEvent,
-                 filters = filters
+                 filters = filters,
+                 selectedFilterType = selectedFilterType
              )
 
          }
@@ -135,7 +142,8 @@ fun HeaderFilter(
 fun BodyFilter(
     modifier: Modifier,
     onEvent: (CashFlowEvent) -> Unit,
-    filters: List<FilterType>
+    filters: List<FilterType>,
+    selectedFilterType: UserFilterType
 ){
     Row(
         modifier = modifier
@@ -144,7 +152,9 @@ fun BodyFilter(
             .weight(1f)
             .padding(vertical = 8.dp)
             .padding(start = 8.dp),
-            onEvent = onEvent
+            onEvent = onEvent,
+            isSelected = filters.any { it.isChecked },
+            selectedFilterType = selectedFilterType
         )
         VerticalDivider(
             modifier = Modifier.fillMaxHeight(),
@@ -188,7 +198,9 @@ fun RightBodyFilter(
 @Composable
 fun LeftBodyFilter(
     modifier: Modifier,
-    onEvent: (CashFlowEvent) -> Unit
+    onEvent: (CashFlowEvent) -> Unit,
+    isSelected: Boolean,
+    selectedFilterType: UserFilterType
 ){
     Column(
         modifier = modifier,
@@ -200,14 +212,16 @@ fun LeftBodyFilter(
               .clickable {
                   onEvent(CashFlowEvent.SelectedFilterType(UserFilterType.ENTRY))
               },
-          text = Res.string.entry_type
+          text = Res.string.entry_type,
+          isSelected = if(selectedFilterType == UserFilterType.ENTRY) isSelected else false
       )
         LeftBodyFilterItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
                 },
-            text = Res.string.members
+            text = Res.string.members,
+            isSelected =if(selectedFilterType == UserFilterType.MEMBERS) isSelected else false
         )
         LeftBodyFilterItem(
             modifier = Modifier
@@ -215,7 +229,8 @@ fun LeftBodyFilter(
                 .clickable {
                     onEvent(CashFlowEvent.SelectedFilterType(UserFilterType.INCOME))
                 },
-            text = Res.string.income_category
+            text = Res.string.income_category,
+            isSelected =if(selectedFilterType == UserFilterType.INCOME) isSelected else false
         )
         LeftBodyFilterItem(
             modifier = Modifier
@@ -223,7 +238,8 @@ fun LeftBodyFilter(
                 .clickable {
                     onEvent(CashFlowEvent.SelectedFilterType(UserFilterType.EXPENSE))
                 },
-            text = Res.string.expense_category
+            text = Res.string.expense_category,
+            isSelected = if(selectedFilterType == UserFilterType.EXPENSE) isSelected else false
         )
     }
 }
@@ -231,16 +247,33 @@ fun LeftBodyFilter(
 @Composable
 fun LeftBodyFilterItem(
     modifier: Modifier,
-    text: StringResource
+    text: StringResource,
+    isSelected:Boolean
 ){
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-      TextFilter(
-          text = text,
-          modifier = Modifier.fillMaxWidth()
-      )
+      Row(
+          modifier = Modifier.fillMaxWidth(),
+          verticalAlignment = Alignment.CenterVertically
+      ) {
+          TextFilter(
+              text = text,
+              modifier = Modifier.weight(1f)
+          )
+
+
+          Box(
+              modifier = Modifier
+                  .size(8.dp)
+                  .background(
+                      color = MaterialTheme.colorScheme.primary.copy(alpha = if(isSelected) 1f else 0f),
+                      shape = CircleShape
+                  )
+          )
+      }
+
       HorizontalDivider(
           modifier = Modifier.fillMaxWidth(),
           color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),

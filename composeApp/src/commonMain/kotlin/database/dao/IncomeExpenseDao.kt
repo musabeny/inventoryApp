@@ -29,4 +29,16 @@ interface IncomeExpenseDao {
     @Query("SELECT * FROM IncomeExpenseEntity WHERE isIncomeOrExpense =:expenseOrIncomeId ")
     fun getCategoryByExpenseOrIncome(expenseOrIncomeId:Int):Flow<List<CategoryAndIncomeExpense>>
 
+    @Transaction
+    @Query("SELECT * FROM IncomeExpenseEntity WHERE  dateCreated BETWEEN :startDate AND :endDate  AND categoryId IN (:category) AND isIncomeOrExpense IN (:incomeOrExpense) ORDER BY dateCreated DESC  ")
+    fun getIncomeExpenseByCategory(startDate:LocalDate,endDate:LocalDate,category:List<Long>,incomeOrExpense:List<Int>):Flow<List<CategoryAndIncomeExpense>>
+
+    @Transaction
+    @Query("SELECT * FROM IncomeExpenseEntity WHERE dateCreated BETWEEN :startDate AND :endDate AND isIncomeOrExpense IN (:incomeOrExpense)  ORDER BY dateCreated DESC  ")
+    fun getIncomeExpenseByEntryType(startDate:LocalDate,endDate:LocalDate,incomeOrExpense:List<Int>):Flow<List<CategoryAndIncomeExpense>>
+
+    @Transaction
+    @Query("SELECT * FROM IncomeExpenseEntity WHERE dateCreated BETWEEN :startDate AND :endDate AND isIncomeOrExpense IN (:incomeOrExpense) AND categoryId IN (:categories)  ORDER BY dateCreated DESC  ")
+    fun getIncomeExpenseFiltered(startDate:LocalDate,endDate:LocalDate,incomeOrExpense:List<Int>, categories:List<Long>):Flow<List<CategoryAndIncomeExpense>>
+
 }

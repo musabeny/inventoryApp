@@ -11,4 +11,5 @@ interface CashFlowRepository {
     suspend fun deleteIncomeExpense(incomeExpense: IncomeExpense):Int
     fun getIncomeExpense(startDate:LocalDate,endDate:LocalDate):Flow<List<IncomeExpense>>
     fun getCategoryByIncomeOrExpense(expenseOrIncome:Int):Flow<List<FilterType>>
+    fun filterIncomeExpense(startDate:LocalDate,endDate:LocalDate,entryTypes:List<Int>,category:List<Long>,categoryIncomeExpenseType:List<Int>):Flow<List<IncomeExpense>>
 }

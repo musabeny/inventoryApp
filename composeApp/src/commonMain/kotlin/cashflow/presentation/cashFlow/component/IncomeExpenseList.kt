@@ -54,8 +54,9 @@ fun IncomeExpenseList(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            header()
-
+            if(groupedByDate.isNotEmpty()){
+                header()
+            }
         }
         groupedByDate.forEach {(date,datas) ->
           item {

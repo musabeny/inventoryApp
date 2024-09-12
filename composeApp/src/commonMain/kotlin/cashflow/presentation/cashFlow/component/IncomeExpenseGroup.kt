@@ -43,7 +43,10 @@ fun IncomeExpenseGroup(
               GridItemSpan(3)
           }
       ) {
-          header()
+          if(incomeExpensesGroup.isNotEmpty()){
+              header()
+          }
+
       }
 
      incomeExpensesGroup.forEach { (category,incomeExpense) ->
