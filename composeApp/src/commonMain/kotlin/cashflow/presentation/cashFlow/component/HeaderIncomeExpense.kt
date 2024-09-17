@@ -146,8 +146,10 @@ fun ViewOption(
     isFilter:Boolean = false
 ){
     Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         icon?.let {
             Icon(

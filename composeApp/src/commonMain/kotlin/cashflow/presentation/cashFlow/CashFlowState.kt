@@ -12,7 +12,7 @@ data class CashFlowState(
     val dateRange:ClosedRange<LocalDate>? = null,
     val showNextArrow:Boolean = true,
     val categories:List<CategoryWithColor> = emptyList(),
-    val showIncomeForm:Boolean = false,
+    val showIncomeOrExpenseForm:Boolean = false,
     val showCategoryDropDown:Boolean = false,
     val selectedCategory:CategoryWithColor? = null,
     val amount:String? = null,
@@ -28,5 +28,7 @@ data class CashFlowState(
     val entryType:List<FilterType> = emptyList(),
     val incomeCategory:List<FilterType> = emptyList(),
     val expenseCategory:List<FilterType> = emptyList(),
-    val userFilterType:UserFilterType = UserFilterType.ENTRY
+    val userFilterType:UserFilterType = UserFilterType.ENTRY,
+    val showDeleteDialog:Boolean = false,
+    val selectedIncomeExpense:IncomeExpense? = null
 )

@@ -1,6 +1,5 @@
 package cashflow.presentation.cashFlow
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cashflow.domain.enums.IncomeExpenseType
@@ -11,8 +10,11 @@ import cashflow.domain.model.IncomeExpense
 import cashflow.domain.repository.CashFlowRepository
 import cashflow.domain.usecase.CashFlowUseCases
 import core.navigation.Routes
+import core.util.CATEGORY_ID
+import core.util.IS_INCOME_OR_EXPENSE
 import core.util.UiEvent
 import core.util.UiText
+import database.model.CategoryIdAndIsIncomeOrExpense
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.all
 import inventoryapp.composeapp.generated.resources.expense
@@ -121,12 +123,12 @@ class CashFlowViewModel(
            is CashFlowEvent.Categories ->categories()
            is CashFlowEvent.ShowIncomeExpenseForm ->{
                _state.update {
-                   it.copy(showIncomeForm = event.show)
+                   it.copy(showIncomeOrExpenseForm = event.show)
                }
                _state.update {
                    it.copy(incomeExpenseType = event.incomeExpenseType)
                }
-               if(!_state.value.showIncomeForm){
+               if(!_state.value.showIncomeOrExpenseForm){
                    _state.update {
                        it.copy(amount = null)
                    }
@@ -208,6 +210,33 @@ class CashFlowViewModel(
                }
            }
            is CashFlowEvent.ClearAllFilter ->filterCategoryList()
+           is CashFlowEvent.DeleteDialog ->{
+               _state.update {
+                   it.copy(showDeleteDialog = event.show)
+               }
+               _state.update {
+                   it.copy(selectedIncomeExpense = event.incomeExpense)
+               }
+           }
+           is CashFlowEvent.DeleteIncomeExpense ->{
+               viewModelScope.launch {
+                  event.incomeExpense?.let {
+                       cashFlowRepository.deleteIncomeExpense(it)
+                  }
+                  onEvent(CashFlowEvent.DeleteDialog(false,null))
+               }
+           }
+           is CashFlowEvent.GoToBreakDownPage ->{
+               event.navController.navigate(Routes.BreakDown.route.replace("{$CATEGORY_ID}","${event.categoryId}").replace("{$IS_INCOME_OR_EXPENSE}","${event.incomeOrExpense}"))
+           }
+           is CashFlowEvent.DeleteCategoryWithItems ->{
+               viewModelScope.launch {
+                   val categoryIdAndIsIncomeOrExpense = CategoryIdAndIsIncomeOrExpense(event.categoryId,event.isIncomeOrExpense)
+                  cashFlowRepository.deleteByCategoryIdAndIsIncomeOrExpense(categoryIdAndIsIncomeOrExpense)
+                   onEvent(CashFlowEvent.DeleteDialog(false,null))
+               }
+
+           }
            else -> {}
         }
     }

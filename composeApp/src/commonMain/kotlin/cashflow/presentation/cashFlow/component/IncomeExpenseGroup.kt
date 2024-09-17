@@ -1,5 +1,7 @@
 package cashflow.presentation.cashFlow.component
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,17 +20,22 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import cashflow.domain.enums.IncomeExpenseType
 import cashflow.domain.model.IncomeExpense
+import cashflow.presentation.cashFlow.CashFlowEvent
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.expense
 import inventoryapp.composeapp.generated.resources.income
 import org.jetbrains.compose.resources.stringResource
 import settings.domain.model.category.CategoryWithColor
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun IncomeExpenseGroup(
     modifier: Modifier,
+    onEvent: (CashFlowEvent)-> Unit,
+    navController: NavController,
     incomeExpensesGroup: Map<Pair<Int, CategoryWithColor>, List<IncomeExpense>>,
     header:@Composable () -> Unit
 ){
@@ -52,7 +59,19 @@ fun IncomeExpenseGroup(
      incomeExpensesGroup.forEach { (category,incomeExpense) ->
        item{
          GroupItem(
-             modifier = Modifier,
+             modifier = Modifier
+                 .combinedClickable(
+                     onClick = {
+                         onEvent(CashFlowEvent.GoToBreakDownPage(
+                             navController,
+                             categoryId = category.second.id,
+                             incomeOrExpense = category.first
+                         ))
+                     },
+                     onLongClick ={
+                         onEvent(CashFlowEvent.DeleteDialog(true,incomeExpense.first()))
+                     }
+                 ),
              category = category.second,
              amount = "${incomeExpense.sumOf { it.amount }}",
              type = if(category.first == IncomeExpenseType.INCOME.value) stringResource(Res.string.income) else stringResource(Res.string.expense)

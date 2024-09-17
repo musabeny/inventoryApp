@@ -55,7 +55,7 @@ fun IncomeExpenseForm(
     categories:List<CategoryWithColor>,
     onEvent: (CashFlowEvent) -> Unit,
     selectedCategory:CategoryWithColor?,
-    showIncomeForm:Boolean,
+    showIncomeOrExpenseForm:Boolean,
     showCategoryDropDown:Boolean,
     bottomSheetForAddCategory:()->Unit,
     amount:String?,
@@ -64,10 +64,11 @@ fun IncomeExpenseForm(
     incomeExpenseType: IncomeExpenseType
 ){
 
- if(showIncomeForm){
+ if(showIncomeOrExpenseForm){
      ModalBottomSheet(
          modifier = modifier,
          dragHandle = null,
+         shape = RoundedCornerShape(4.dp),
          onDismissRequest = {
              onEvent(CashFlowEvent.ShowIncomeExpenseForm(false,incomeExpenseType))
          }

@@ -8,6 +8,7 @@ import cashflow.domain.model.FilterType
 import cashflow.domain.model.IncomeExpense
 import cashflow.domain.repository.CashFlowRepository
 import database.InventoryDatabase
+import database.model.CategoryIdAndIsIncomeOrExpense
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -63,5 +64,19 @@ import settings.domain.useCase.ProductUseCase
          }
 
 
+     }
+
+     override suspend fun deleteIncomeCategoryById(incomeExpense: IncomeExpense): Int {
+        return db.incomeExpenseDao().deleteIncomeExpense(incomeExpense.toIncomeExpenseEntity())
+     }
+
+     override fun getIncomeExpenseByCategoryId(categoryId: Long,isIncomeOrExpense:Int): Flow<List<IncomeExpense>> {
+         return db.incomeExpenseDao().getIncomeExpenseByCategoryId(categoryId,isIncomeOrExpense).map { incomeExpense ->
+             incomeExpense.map { it.toIncomeExpense(productUseCase.color()) }
+         }
+     }
+
+     override suspend fun deleteByCategoryIdAndIsIncomeOrExpense(categoryIdAndIsIncomeOrExpense: CategoryIdAndIsIncomeOrExpense): Int {
+       return   db.incomeExpenseDao().deleteByCategoryId(categoryIdAndIsIncomeOrExpense)
      }
  }

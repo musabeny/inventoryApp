@@ -37,10 +37,13 @@ import cashflow.domain.enums.CashFlowTabs
 import cashflow.data.mapper.toDateMonthYearFormat
 import cashflow.domain.enums.UserFilterType
 import cashflow.presentation.cashFlow.component.DateRange
+import cashflow.presentation.cashFlow.component.DeleteDialog
 import cashflow.presentation.cashFlow.component.FilterSheet
 import cashflow.presentation.cashFlow.component.IncomeExpensePage
 import core.component.AddCategory
 import core.util.DATE_RANGE
+import inventoryapp.composeapp.generated.resources.Res
+import inventoryapp.composeapp.generated.resources.are_you_sure_you_want_to_delete_item
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
@@ -169,7 +172,7 @@ fun CashFlowScreen(
                                 categories = state.categories,
                                 onEvent = onEvent,
                                 selectedCategory = state.selectedCategory,
-                                showIncomeForm = state.showIncomeForm,
+                                showIncomeForm = state.showIncomeOrExpenseForm,
                                 showCategoryDropDown = state.showCategoryDropDown,
                                 amount = state.amount ,
                                 note = state.note,
@@ -179,6 +182,7 @@ fun CashFlowScreen(
                                 groupedByDate = state.incomeExpenses,
                                 totalIncome = state.totalIncome,
                                 totalExpense = state.totalExpense,
+                                navController = navController,
                                 incomeExpensesGroup = state.incomeExpensesGroup
                             ){
                                 inventoryEvent(InventoryEvent.ShowBottomSheet(true))
@@ -216,6 +220,14 @@ fun CashFlowScreen(
                 UserFilterType.EXPENSE -> state.expenseCategory
             },
             selectedFilterType = state.userFilterType
+        )
+
+        DeleteDialog(
+            modifier = Modifier,
+            showDialog = state.showDeleteDialog,
+            onEvent = onEvent,
+            selectedIncomeExpense = state.selectedIncomeExpense,
+            type = state.vewType
         )
 
     }

@@ -1,6 +1,9 @@
 package cashflow.presentation.cashFlow.component
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +43,7 @@ import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
 import settings.domain.model.category.CategoryWithColor
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun IncomeExpenseList(
     modifier: Modifier,
@@ -74,7 +78,15 @@ fun IncomeExpenseList(
           }
           items(datas.reversed()) {data ->
               ItemIncomeExpense(
-                  modifier = Modifier.fillMaxWidth(),
+                  modifier = Modifier
+                      .fillMaxWidth()
+                      .combinedClickable(
+                         onClick = {},
+                          onLongClick = {
+                              onEvent(CashFlowEvent.DeleteDialog(true,data))
+                          },
+                      )
+                  ,
                   category = data.category,
                   note = data.note,
                   user = "Musa Beny",

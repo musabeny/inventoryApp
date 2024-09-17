@@ -2,7 +2,6 @@ package cashflow.presentation.cashFlow.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import cashflow.domain.enums.IncomeExpenseType
 import cashflow.domain.enums.ListViewType
 import cashflow.domain.model.IncomeExpense
@@ -35,6 +35,7 @@ fun IncomeExpensePage(
     groupedByDate: Map<LocalDate, List<IncomeExpense>>,
     totalIncome:String,
     totalExpense:String,
+    navController: NavController,
     incomeExpensesGroup: Map<Pair<Int, CategoryWithColor>, List<IncomeExpense>>,
     bottomSheetForAddCategory:()->Unit
 ){
@@ -61,6 +62,8 @@ fun IncomeExpensePage(
             IncomeExpenseGroup(
                 modifier = Modifier.fillMaxSize(),
                 incomeExpensesGroup = incomeExpensesGroup,
+                onEvent = onEvent,
+                navController = navController
             ){
                 HeaderIncomeExpense(
                     modifier = Modifier
@@ -85,7 +88,7 @@ fun IncomeExpensePage(
          categories = categories,
          onEvent = onEvent,
          selectedCategory = selectedCategory,
-         showIncomeForm = showIncomeForm,
+         showIncomeOrExpenseForm = showIncomeForm,
          showCategoryDropDown = showCategoryDropDown,
          bottomSheetForAddCategory = bottomSheetForAddCategory,
          amount = amount,

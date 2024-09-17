@@ -5,6 +5,7 @@ import cashflow.domain.enums.IncomeExpenseType
 import cashflow.domain.enums.ListViewType
 import cashflow.domain.enums.UserFilterType
 import cashflow.domain.model.FilterType
+import cashflow.domain.model.IncomeExpense
 import kotlinx.datetime.LocalDate
 import settings.domain.model.category.CategoryWithColor
 
@@ -31,4 +32,12 @@ sealed interface CashFlowEvent {
     data class SelectedFilter(val filterType: FilterType, val isChecked:Boolean):CashFlowEvent
     data class SelectedFilterType(val filterType: UserFilterType):CashFlowEvent
     data object ClearAllFilter:CashFlowEvent
+    data class DeleteDialog(val show:Boolean,val incomeExpense: IncomeExpense?):CashFlowEvent
+    data class DeleteIncomeExpense(val incomeExpense: IncomeExpense?):CashFlowEvent
+    data class GoToBreakDownPage(
+        val navController: NavController,
+        val categoryId:Long?,
+        val incomeOrExpense:Int?
+    ):CashFlowEvent
+    data class DeleteCategoryWithItems(val categoryId:Long,val isIncomeOrExpense:Int):CashFlowEvent
 }

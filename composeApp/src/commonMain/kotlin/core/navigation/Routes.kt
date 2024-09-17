@@ -1,5 +1,7 @@
 package core.navigation
 
+import core.util.CATEGORY_ID
+import core.util.IS_INCOME_OR_EXPENSE
 import core.util.PRODUCT_ID
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.calculate
@@ -23,7 +25,8 @@ sealed class Routes(
         defaultIcon = Res.drawable.report_icon
     )
 
-    data object Sales:Routes(route = "sales",
+    data object Sales:Routes(
+        route = "sales",
         title = Res.string.sales,
         defaultIcon = Res.drawable.calculate
     )
@@ -47,6 +50,12 @@ sealed class Routes(
     )
 
     data object Calender:Routes(route = "calender",
+        title = Res.string.inventory,
+        defaultIcon = null
+    )
+
+    data object BreakDown:Routes(
+        route = "breakDown/{$CATEGORY_ID}/{$IS_INCOME_OR_EXPENSE}",
         title = Res.string.inventory,
         defaultIcon = null
     )

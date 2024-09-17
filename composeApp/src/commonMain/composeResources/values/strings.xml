@@ -84,4 +84,8 @@
     <string name="members">Members</string>
     <string name="income_category">Income Category</string>
     <string name="expense_category">Expense Category</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="are_you_sure_you_want_to_delete_item">Are You Sure You Want To Delete The Item?</string>
+    <string name="are_you_sure_you_want_to_delete_category_and_transaction">Are You Sure You Want To Delete The Category and All the Transaction  in it?</string>
 </resources>
