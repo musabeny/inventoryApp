@@ -15,6 +15,8 @@ import cashflow.presentation.cashFlow.CashFlowScreen
 import cashflow.presentation.cashFlow.CashFlowViewModel
 import cashflow.presentation.customCalender.CalenderScreen
 import cashflow.presentation.customCalender.CalenderViewModel
+import cashflow.presentation.purchase.PurchaseScreen
+import cashflow.presentation.purchase.PurchaseViewModel
 import core.util.CATEGORY_ID
 import core.util.IS_INCOME_OR_EXPENSE
 import core.util.PRODUCT_ID
@@ -40,6 +42,7 @@ fun ScreenNavHost(
     updateInventoryState:(Boolean,String)->Unit,
 
 ){
+
 
     NavHost(navController = navHostController, startDestination = Routes.CashFlow.route){
         composable(route = Routes.Report.route){
@@ -140,6 +143,19 @@ fun ScreenNavHost(
               onEventCashFlow = viewModelCashFlow::onEvent,
               navController = navHostController
           )
+        }
+
+
+        composable(route = Routes.Purchase.route){
+            val viewModel = koinViewModel<PurchaseViewModel>()
+            val  state = viewModel.state.collectAsState().value
+            PurchaseScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                navController = navHostController,
+                snackBarHost = snackBarHost,
+                uiEvent = viewModel.uiEvent
+            )
         }
     }
 }

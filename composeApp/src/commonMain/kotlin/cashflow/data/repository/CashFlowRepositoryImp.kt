@@ -1,11 +1,15 @@
 package cashflow.data.repository
 
+import cashflow.data.mapper.toBillEntity
+import cashflow.data.mapper.toBillItemEntity
 import cashflow.data.mapper.toFilterType
 import cashflow.data.mapper.toIncomeExpense
 import cashflow.data.mapper.toIncomeExpenseEntity
 import cashflow.domain.enums.IncomeExpenseType
 import cashflow.domain.model.FilterType
 import cashflow.domain.model.IncomeExpense
+import cashflow.domain.model.purchase.Bill
+import cashflow.domain.model.purchase.BillItem
 import cashflow.domain.repository.CashFlowRepository
 import database.InventoryDatabase
 import database.model.CategoryIdAndIsIncomeOrExpense
@@ -79,4 +83,6 @@ import settings.domain.useCase.ProductUseCase
      override suspend fun deleteByCategoryIdAndIsIncomeOrExpense(categoryIdAndIsIncomeOrExpense: CategoryIdAndIsIncomeOrExpense): Int {
        return   db.incomeExpenseDao().deleteByCategoryId(categoryIdAndIsIncomeOrExpense)
      }
+
+
  }

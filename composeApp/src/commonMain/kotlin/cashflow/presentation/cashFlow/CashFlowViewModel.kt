@@ -237,6 +237,9 @@ class CashFlowViewModel(
                }
 
            }
+            is CashFlowEvent.GoToPurchase ->{
+                event.navController.navigate(Routes.Purchase.route)
+            }
            else -> {}
         }
     }
@@ -259,16 +262,16 @@ class CashFlowViewModel(
            val category  = _state.value.selectedCategory
            val amount = _state.value.amount
            if( category== null){
-               sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Please select category").value))
+               sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Please select category")))
                return@launch
            }
            if(amount.isNullOrBlank()){
-               sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Amount can not be empty").value))
+               sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Amount can not be empty")))
                return@launch
            }
            val amountInNumber = amount.toDoubleOrNull()
            if(amountInNumber == null){
-               sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Please enter a proper number").value))
+               sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Please enter a proper number")))
                return@launch
            }
            val incomeExpense  = IncomeExpense(
@@ -281,7 +284,7 @@ class CashFlowViewModel(
            )
          val result =  cashFlowRepository.insertIncomeExpense(incomeExpense)
            if(result<=0){
-               sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Fail to save data").value))
+               sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Fail to save data")))
            }else{
                onEvent(CashFlowEvent.ShowIncomeExpenseForm(false,_state.value.incomeExpenseType))
            }

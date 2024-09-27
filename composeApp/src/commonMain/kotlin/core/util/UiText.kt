@@ -5,6 +5,7 @@ import androidx.compose.runtime.CompositionContext
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.can_not_be_empty
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 
 sealed interface UiText{
@@ -14,14 +15,19 @@ sealed interface UiText{
      ):UiText
 
     @Composable
-    fun asString():String{
+    fun asUiString():String{
        return when(this){
            is DynamicText -> value
            is StringResources -> stringResource( res)
        }
     }
 
-
+suspend fun asString():String{
+    return when(this){
+        is DynamicText -> value
+        is StringResources -> getString( res)
+    }
+}
 
 
 

@@ -40,4 +40,5 @@ sealed interface CashFlowEvent {
         val incomeOrExpense:Int?
     ):CashFlowEvent
     data class DeleteCategoryWithItems(val categoryId:Long,val isIncomeOrExpense:Int):CashFlowEvent
+    data class GoToPurchase(val navController: NavController):CashFlowEvent
 }

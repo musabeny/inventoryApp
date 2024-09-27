@@ -88,4 +88,15 @@
     <string name="no">No</string>
     <string name="are_you_sure_you_want_to_delete_item">Are You Sure You Want To Delete The Item?</string>
     <string name="are_you_sure_you_want_to_delete_category_and_transaction">Are You Sure You Want To Delete The Category and All the Transaction  in it?</string>
+
+    //Purchase Screen
+    <string name="new_purchase">New Purchase</string>
+    <string name="add_new_item">Add New Item</string>
+    <string name="item_name">Item Name</string>
+    <string name="price">Price</string>
+    <string name="bill_title">Bill Title</string>
+    <string name="create_purchase">Create Purchase</string>
+    <string name="save_draft">Save Draft</string>
+    <string name="bill_can_not_empty">Bill can not be empty</string>
+    <string name="add_atleast_item">Add Atleast One Item</string>
 </resources>

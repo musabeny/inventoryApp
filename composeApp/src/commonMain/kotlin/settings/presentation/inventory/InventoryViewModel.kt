@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import core.navigation.Routes
 import core.util.PRODUCT_ID
 import core.util.UiEvent
+import core.util.UiText
+import inventoryapp.composeapp.generated.resources.Res
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -151,9 +153,9 @@ class InventoryViewModel(
                     _state.update {
                         it.copy(categoryName = "")
                     }
-                    sendEvent(UiEvent.ShowSnackBar(message = "Category updated Successfully"))
+                    sendEvent(UiEvent.ShowSnackBar(message = UiText.DynamicText("Category updated Successfully")))
                 }else{
-                    sendEvent(UiEvent.ShowSnackBar(message = "Fail to update Category"))
+                    sendEvent(UiEvent.ShowSnackBar(message =  UiText.DynamicText("Fail to update Category")))
                 }
             }else{
                 val result = categoryRepository.insertCategory(category)
@@ -164,9 +166,9 @@ class InventoryViewModel(
                     _state.update {
                         it.copy(categoryName = "")
                     }
-                    sendEvent(UiEvent.ShowSnackBar(message = "Category saved Successfully"))
+                    sendEvent(UiEvent.ShowSnackBar(message =  UiText.DynamicText("Category saved Successfully")))
                 }else{
-                    sendEvent(UiEvent.ShowSnackBar(message = "Fail to save Category"))
+                    sendEvent(UiEvent.ShowSnackBar(message =  UiText.DynamicText("Fail to save Category")))
                 }
             }
 

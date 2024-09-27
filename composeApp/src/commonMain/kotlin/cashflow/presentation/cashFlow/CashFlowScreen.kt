@@ -40,6 +40,7 @@ import cashflow.presentation.cashFlow.component.DateRange
 import cashflow.presentation.cashFlow.component.DeleteDialog
 import cashflow.presentation.cashFlow.component.FilterSheet
 import cashflow.presentation.cashFlow.component.IncomeExpensePage
+import cashflow.presentation.cashFlow.component.PurchasePage
 import core.component.AddCategory
 import core.util.DATE_RANGE
 import inventoryapp.composeapp.generated.resources.Res
@@ -191,7 +192,12 @@ fun CashFlowScreen(
                             }
 
                         }
-                        1->{ Text(text = "Purchase") }
+                        1->{
+                            PurchasePage(
+                                onEvent = onEvent,
+                                navController = navController
+                            )
+                        }
                     }
 
                 }

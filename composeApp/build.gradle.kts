@@ -113,30 +113,23 @@ android {
 
 dependencies {
     implementation(libs.androidx.media3.common)
-//    ksp(libs.room.compiler)
-//    add("kspAndroid", libs.room.compiler)
-//    add("kspIosSimulatorArm64", libs.room.compiler)
-//    add("kspIosX64", libs.room.compiler)
-//    add("kspIosArm64", libs.room.compiler)
-    add("kspCommonMainMetadata", libs.room.compiler)
+//    add("kspCommonMainMetadata", libs.room.compiler)
+    ksp(libs.room.compiler)
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
+    add("kspIosX64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
 }
 
 room {
     schemaDirectory("$projectDir/schemas")
 }
 
-//dependencies {
-//implementation(libs.androidx.media3.common)
-//    add("kspCommonMainMetadata", libs.room.compiler)
+//tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+//    if (name != "kspCommonMainKotlinMetadata" ) {
+//        dependsOn("kspCommonMainKotlinMetadata")
+//    }
 //}
-
-//Room step6 part 2 make all source sets to depend on kspCommonMainKotlinMetadata:  Update: https://issuetracker.google.com/u/0/issues/342905180
-
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
-    if (name != "kspCommonMainKotlinMetadata" ) {
-        dependsOn("kspCommonMainKotlinMetadata")
-    }
-}
 
 
 

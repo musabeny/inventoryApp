@@ -15,16 +15,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,7 +46,7 @@ import inventoryapp.composeapp.generated.resources.today
 import inventoryapp.composeapp.generated.resources.yesterday
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BreakDownScreen(
     state: BreakDownState,
@@ -64,14 +68,40 @@ fun BreakDownScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopBarBreakDown(
-                modifier = Modifier.fillMaxWidth(),
-                itemName = state.category?.name ?: "",
-                amount = "${state.amount}",
-                incomeExpenseType =if(isIncomeOrExpense == IncomeExpenseType.INCOME.value) IncomeExpenseType.INCOME else IncomeExpenseType.EXPENSE,
-                onEvent = onEvent,
-                navController = navController
+            CenterAlignedTopAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 2.dp)
+                    ,
+                title = {
+                    Text(text = state.category?.name ?: "")
+                },
+                navigationIcon = {
+                    Icon(
+                        modifier = Modifier.clickable {
+                            onEvent(BreakDownEvent.CloseScreen(navController))
+                        },
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                },
+                actions = {
+                    Text(
+                        text =  "${state.amount}",
+                        color = if(isIncomeOrExpense == IncomeExpenseType.INCOME.value)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                    )
+
+                }
             )
+//            TopBarBreakDown(
+//                modifier = Modifier.fillMaxWidth(),
+//                itemName = state.category?.name ?: "",
+//                amount = "${state.amount}",
+//                incomeExpenseType =if(isIncomeOrExpense == IncomeExpenseType.INCOME.value) IncomeExpenseType.INCOME else IncomeExpenseType.EXPENSE,
+//                onEvent = onEvent,
+//                navController = navController
+//            )
         },
         floatingActionButton = {
           FloatingActionButton(

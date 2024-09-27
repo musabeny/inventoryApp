@@ -37,7 +37,8 @@ fun CustomTextField(
     parameter:String?=null,
     hintStyle: TextStyle = MaterialTheme.typography.headlineSmall,
     textColor: Color = Color.Black,
-    textSize: TextUnit = 18.sp
+    textSize: TextUnit = 18.sp,
+    fontWeight: FontWeight = FontWeight.ExtraBold
 ){
     TextField(
         modifier = modifier,
@@ -52,7 +53,7 @@ fun CustomTextField(
             if(hint != null){
                 Text(
                     text =if(parameter==null) stringResource(hint) else stringResource(hint,parameter),
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = fontWeight,
                     color = Color.Gray.copy(alpha = 0.7f),
                     style = hintStyle
                 )
@@ -76,7 +77,7 @@ fun CustomTextField(
             background = MaterialTheme.colorScheme.onPrimary,
             color = textColor,
             fontWeight = FontWeight.Bold,
-            fontSize = textSize
+//            fontSize = textSize
         ),
         onValueChange = onValue,
         supportingText = {

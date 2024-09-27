@@ -67,7 +67,7 @@ fun InventoryScreen(
         uiEvent.collect{event ->
             when(event){
                 is UiEvent.ShowSnackBar ->{
-                    snackBarHost.showSnackbar(event.message)
+                    snackBarHost.showSnackbar(event.message.asString())
                 }
                 is UiEvent.Navigate ->{
                     navController.popBackStack()

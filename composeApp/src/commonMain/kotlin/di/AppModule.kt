@@ -3,6 +3,7 @@ package di
 import cashflow.presentation.breakDown.BreakDownViewModel
 import cashflow.presentation.cashFlow.CashFlowViewModel
 import cashflow.presentation.customCalender.CalenderViewModel
+import cashflow.presentation.purchase.PurchaseViewModel
 import org.koin.compose.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 import settings.presentation.inventory.InventoryViewModel
@@ -17,4 +18,5 @@ val appModule = module {
     viewModelOf(::CashFlowViewModel)
     viewModelOf(::CalenderViewModel)
     viewModelOf(::BreakDownViewModel)
+   viewModelOf(::PurchaseViewModel)
 }

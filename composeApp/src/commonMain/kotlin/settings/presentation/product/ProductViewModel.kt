@@ -116,8 +116,9 @@ class ProductViewModel(
                     it.copy(expireDate = event.dateSelected)
                 }
                 _state.value.expireDate?.let {date ->
+                    val dateFormated = useCase.dateMillsToDate(date)
                     _state.update {
-                        it.copy(expireDateFormatted =useCase.dateMillsToDate(date).toString() )
+                        it.copy(expireDateFormatted ="${dateFormated.dayOfMonth}/${dateFormated.monthNumber}/${dateFormated.year}" )
                     }
                 }
 
@@ -189,10 +190,10 @@ class ProductViewModel(
 //                    sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Product saved Successfully").value))
                     sendEvent(UiEvent.PopBackStack)
                 }else{
-                    sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Fail to save product").value))
+                    sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Fail to save product")))
                 }
             }else{
-                sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Please fill all the necessary field").value))
+                sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Please fill all the necessary field")))
             }
 
         }

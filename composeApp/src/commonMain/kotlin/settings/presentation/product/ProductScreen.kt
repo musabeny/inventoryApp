@@ -1,43 +1,24 @@
 package settings.presentation.product
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,19 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import core.util.UiEvent
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.barcode
-import inventoryapp.composeapp.generated.resources.check_circle
-import inventoryapp.composeapp.generated.resources.expiry_date
-import inventoryapp.composeapp.generated.resources.expiry_date_alert
 import inventoryapp.composeapp.generated.resources.itemCode
 import inventoryapp.composeapp.generated.resources.itemName
 import inventoryapp.composeapp.generated.resources.itemPrice
@@ -70,16 +44,14 @@ import inventoryapp.composeapp.generated.resources.save
 import inventoryapp.composeapp.generated.resources.selectColor
 import inventoryapp.composeapp.generated.resources.update
 import kotlinx.coroutines.flow.Flow
-import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 import settings.domain.enums.CardType
-import settings.domain.model.product.ProductColor
 import settings.presentation.product.component.CardDetail
-import settings.presentation.product.component.SelectDate
+import core.component.SelectDate
 import settings.presentation.product.component.TrackExpiry
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductScreen(
     state: ProductState,
@@ -101,7 +73,7 @@ fun ProductScreen(
         uiEvent.collect{event ->
           when(event){
              is UiEvent.ShowSnackBar ->{
-                 snackBarHost.showSnackbar(event.message)
+                 snackBarHost.showSnackbar(event.message.asString())
               }
              is UiEvent.PopBackStack ->{
                navController.popBackStack()
@@ -257,8 +229,13 @@ fun ProductScreen(
         SelectDate(
             modifier = Modifier,
             showDatePickerDialog = state.showDatePickerDialog,
-            onEvent = onEvent
-        )
+            onDismiss = {
+               onEvent(ProductEvent.DatePickerDialog(show = false))
+            }
+        ){
+         onEvent(ProductEvent.SelectedDate(it.selectedDateMillis))
+
+        }
 
 
 

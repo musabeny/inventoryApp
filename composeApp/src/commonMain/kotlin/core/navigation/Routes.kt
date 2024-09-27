@@ -12,6 +12,7 @@ import inventoryapp.composeapp.generated.resources.report_icon
 import inventoryapp.composeapp.generated.resources.sales
 import inventoryapp.composeapp.generated.resources.inventory
 import inventoryapp.composeapp.generated.resources.product
+import inventoryapp.composeapp.generated.resources.purchase
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
@@ -57,6 +58,10 @@ sealed class Routes(
     data object BreakDown:Routes(
         route = "breakDown/{$CATEGORY_ID}/{$IS_INCOME_OR_EXPENSE}",
         title = Res.string.inventory,
+        defaultIcon = null
+    )
+    data object Purchase:Routes(route = "purchase",
+        title = Res.string.purchase,
         defaultIcon = null
     )
 }
