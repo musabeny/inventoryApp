@@ -15,7 +15,10 @@ import database.InventoryDatabase
 import database.model.CategoryIdAndIsIncomeOrExpense
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.zip
 import kotlinx.datetime.LocalDate
 import settings.domain.useCase.ProductUseCase
@@ -82,6 +85,33 @@ import settings.domain.useCase.ProductUseCase
 
      override suspend fun deleteByCategoryIdAndIsIncomeOrExpense(categoryIdAndIsIncomeOrExpense: CategoryIdAndIsIncomeOrExpense): Int {
        return   db.incomeExpenseDao().deleteByCategoryId(categoryIdAndIsIncomeOrExpense)
+     }
+
+     override suspend fun searchedByCategoryOrNote(
+         startDate: LocalDate,
+         endDate: LocalDate,
+         searchText: String
+     ): Flow<List<IncomeExpense>> {
+      val byNote =    db.incomeExpenseDao().searchOnIncomeExpense(startDate, endDate, searchText)
+//         val byCategoryName = db.categoryDao().searchByCategoryName(startDate,endDate,searchText)
+       //merge(byNote).distinctUntilChanged()
+         return byNote.map {
+           it.map { incomeExpense ->
+               incomeExpense.toIncomeExpense(productUseCase.color())
+           }
+       }
+     }
+
+     override suspend fun searchedByCategory(
+         startDate: LocalDate,
+         endDate: LocalDate,
+         searchText: String
+     ): Flow<List<IncomeExpense>> {
+        return db.categoryDao().searchByCategoryName(startDate,endDate,searchText).map {
+            it.map { incomeExpense ->
+                incomeExpense.toIncomeExpense(productUseCase.color())
+            }
+        }
      }
 
 

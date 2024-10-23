@@ -9,7 +9,7 @@ data class BillWithItems(
     @Embedded val bill:BillEntity,
    @Relation(
        parentColumn = "id",
-       entityColumn = "billId"
+       entityColumn = "bill_id"
    )
    val items:List<BillItemEntity>
 )

@@ -3,12 +3,12 @@ package cashflow.data.mapper
 import cashflow.domain.model.FilterType
 import cashflow.domain.model.IncomeExpense
 import database.entity.IncomeExpenseEntity
-import database.entity.relation.CategoryAndIncomeExpense
+import database.entity.relation.IncomeExpenseAndCategory
 import settings.data.mapper.toCategory
 import settings.data.mapper.toCategoryWithColor
 import settings.domain.model.product.ProductColor
 
-fun CategoryAndIncomeExpense.toIncomeExpense(
+fun IncomeExpenseAndCategory.toIncomeExpense(
     color:List<ProductColor>
 ):IncomeExpense{
     return IncomeExpense(
@@ -32,7 +32,7 @@ fun  IncomeExpense.toIncomeExpenseEntity():IncomeExpenseEntity{
     )
 }
 
-fun CategoryAndIncomeExpense.toFilterType():FilterType{
+fun IncomeExpenseAndCategory.toFilterType():FilterType{
   return  FilterType(
         id = category.id ?: 0L,
         label = category.name

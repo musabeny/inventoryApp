@@ -40,6 +40,7 @@ fun PurchaseItemView(
     index:Int,
     onEvent: (PurchaseEvent) -> Unit
 ){
+
     val localDensity = LocalDensity.current
     var tabHeight by remember {
         mutableStateOf(0.dp)
@@ -69,7 +70,6 @@ fun PurchaseItemView(
                         .weight(3f),
                     value = item.name,
                     onValueChange = {
-                        println("PurchaseEvent index $index")
                         onEvent(PurchaseEvent.EnterItemName(it,index))
                     },
                     label = Res.string.itemName,
@@ -105,7 +105,7 @@ fun PurchaseItemView(
                     color = MaterialTheme.colorScheme.error,
                 )
                 .clickable {
-                    onEvent(PurchaseEvent.RemovePurchaseItem(index))
+                    onEvent(PurchaseEvent.ShowDialog(true,index,item))
                 },
             contentAlignment = Alignment.Center
         ) {

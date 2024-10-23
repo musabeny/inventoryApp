@@ -12,10 +12,13 @@ import database.dao.CategoryDao
 import database.dao.IncomeExpenseDao
 import database.dao.ProductDao
 import database.entity.BillEntity
+import database.entity.BillFts
 import database.entity.BillItemEntity
+import database.entity.BillItemFts
 import database.entity.CategoryEntity
 import database.entity.CategoryFts
 import database.entity.IncomeExpenseEntity
+import database.entity.IncomeExpenseFts
 import database.entity.ProductEntity
 import database.entity.ProductFts
 import di.Factory
@@ -28,7 +31,10 @@ import di.Factory
         CategoryFts::class,
         IncomeExpenseEntity::class,
         BillEntity::class,
-        BillItemEntity::class
+        BillItemEntity::class,
+        BillItemFts::class,
+        BillFts::class,
+        IncomeExpenseFts::class
                ],
     version = 1
 )

@@ -29,6 +29,8 @@ sealed interface CashFlowEvent {
     data object EntryTypes:CashFlowEvent
     data object IncomeCategory:CashFlowEvent
     data object ExpenseCategory:CashFlowEvent
+    data object MemberCategory:CashFlowEvent
+    data object StatusCategory:CashFlowEvent
     data class SelectedFilter(val filterType: FilterType, val isChecked:Boolean):CashFlowEvent
     data class SelectedFilterType(val filterType: UserFilterType):CashFlowEvent
     data object ClearAllFilter:CashFlowEvent
@@ -41,4 +43,10 @@ sealed interface CashFlowEvent {
     ):CashFlowEvent
     data class DeleteCategoryWithItems(val categoryId:Long,val isIncomeOrExpense:Int):CashFlowEvent
     data class GoToPurchase(val navController: NavController):CashFlowEvent
+    data object PurchasedItems:CashFlowEvent
+    data class SelectedPageIndex(val index:Int):CashFlowEvent
+    data class Search(val text:String):CashFlowEvent
+    data object ClearSearchText:CashFlowEvent
+    data class NavigateToPurchaseReceipt(val billId:String?):CashFlowEvent
+
 }

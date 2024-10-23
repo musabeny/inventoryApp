@@ -3,6 +3,7 @@ package cashflow.presentation.cashFlow.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,8 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import cashflow.domain.enums.CashFlowTabs
 import cashflow.domain.enums.ListViewType
 import cashflow.presentation.cashFlow.CashFlowEvent
 import inventoryapp.composeapp.generated.resources.Res
@@ -37,18 +40,22 @@ import inventoryapp.composeapp.generated.resources.grid
 import inventoryapp.composeapp.generated.resources.group
 import inventoryapp.composeapp.generated.resources.income
 import inventoryapp.composeapp.generated.resources.list
+import inventoryapp.composeapp.generated.resources.today
+import inventoryapp.composeapp.generated.resources.total
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun HeaderIncomeExpense(
+fun FilterAndTotalHeader(
     modifier: Modifier,
     viewType: ListViewType,
     onEvent: (CashFlowEvent) -> Unit,
     expense: String,
-    income: String
+    income: String,
+    tab:CashFlowTabs = CashFlowTabs.INCOME,
+    totalPurchase:String = ""
 
 ){
     val localDensity = LocalDensity.current
@@ -78,11 +85,19 @@ fun HeaderIncomeExpense(
                 thickness = 2.dp,
                 color = MaterialTheme.colorScheme.outline
             )
-            ExpenseIncomeGroupLabel(
-                modifier = Modifier.weight(1f),
-                income = income,
-                expense = expense
-            )
+            if(tab == CashFlowTabs.INCOME){
+                ExpenseIncomeGroupLabel(
+                    modifier = Modifier.weight(1f),
+                    income = income,
+                    expense = expense
+                )
+            }else{
+                TotalPurchase(
+                    modifier = Modifier.weight(1f),
+                    totalPurchase = totalPurchase
+                )
+            }
+
         }
     }
 
@@ -228,4 +243,35 @@ fun ExpenseIncomeLabel(
             textAlign = TextAlign.Center
         )
     }
+}
+
+@Composable
+fun TotalPurchase(
+    modifier: Modifier,
+    totalPurchase:String
+){
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = totalPurchase,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.SemiBold
+                )
+            )
+            Text(
+                text = stringResource(Res.string.total),
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
+    }
+
+
 }

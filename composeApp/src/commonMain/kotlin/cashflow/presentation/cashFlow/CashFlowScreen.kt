@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -42,9 +46,12 @@ import cashflow.presentation.cashFlow.component.FilterSheet
 import cashflow.presentation.cashFlow.component.IncomeExpensePage
 import cashflow.presentation.cashFlow.component.PurchasePage
 import core.component.AddCategory
+import core.component.CustomTextField
 import core.util.DATE_RANGE
+import core.util.UiEvent
 import inventoryapp.composeapp.generated.resources.Res
-import inventoryapp.composeapp.generated.resources.are_you_sure_you_want_to_delete_item
+import inventoryapp.composeapp.generated.resources.search
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.stringResource
@@ -59,7 +66,9 @@ fun CashFlowScreen(
     onEvent: (CashFlowEvent) -> Unit,
     navController: NavController,
     inventoryEvent: (InventoryEvent) -> Unit,
-    inventoryState:InventoryState
+    inventoryState:InventoryState,
+    snackBarHost: SnackbarHostState,
+    uiEvent: Flow<UiEvent>,
 ){
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { InventoryTabs.entries.size})
@@ -74,11 +83,25 @@ fun CashFlowScreen(
 
 
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(true){
         val dateRange = navController.currentBackStackEntry?.savedStateHandle?.get<String>(DATE_RANGE)
         dateRange?.let {range ->
             val (start,end) = range.split(",").map { LocalDate.parse(it) }
             onEvent(CashFlowEvent.SelectedDateRange(start..end))
+        }
+
+        uiEvent.collect{event ->
+            when(event){
+                is UiEvent.Navigate -> {
+                    navController.navigate(event.route)
+                }
+                is UiEvent.PopBackStack -> {
+                    navController.navigateUp()
+                }
+                is UiEvent.ShowSnackBar -> {
+                    snackBarHost.showSnackbar(event.message.asString())
+                }
+            }
         }
 
     }
@@ -102,6 +125,30 @@ fun CashFlowScreen(
 
             )
 
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shadowElevation = 2.dp
+            ) {
+                CustomTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    leadingIcon = Icons.Filled.Search,
+                    hint = Res.string.search,
+                    value = state.searchText,
+                    onValue = {
+                        onEvent(CashFlowEvent.Search(it))
+                    },
+                    fontWeight = FontWeight.Normal,
+                    hintStyle = MaterialTheme.typography.bodyMedium,
+                    showLeadingIcon = true,
+                    showTrailingIcon = true,
+                    clearText = {
+                      onEvent(CashFlowEvent.ClearSearchText)
+                    }
+                )
+            }
+
+
             TabRow(
                 selectedTabIndex = selectedTabIndex.value,
                 modifier = Modifier
@@ -110,8 +157,6 @@ fun CashFlowScreen(
                     .onGloballyPositioned {coordinate ->
                         tabHeight = with(localDensity){coordinate.size.height.toDp()}
                     }
-
-
                 ,
                 containerColor = MaterialTheme.colorScheme.surfaceContainer,
                 divider = {
@@ -132,6 +177,7 @@ fun CashFlowScreen(
                         unselectedContentColor = MaterialTheme.colorScheme.tertiary,
                         onClick = {
                             scope.launch {
+                                onEvent(CashFlowEvent.SelectedPageIndex(cashFlowTabs.ordinal))
                                 pagerState.animateScrollToPage(cashFlowTabs.ordinal)
                             }
                         }
@@ -179,7 +225,7 @@ fun CashFlowScreen(
                                 note = state.note,
                                 today = state.today,
                                 incomeExpenseType = state.incomeExpenseType,
-                                viewType = state.vewType,
+                                viewType = state.viewType,
                                 groupedByDate = state.incomeExpenses,
                                 totalIncome = state.totalIncome,
                                 totalExpense = state.totalExpense,
@@ -195,7 +241,11 @@ fun CashFlowScreen(
                         1->{
                             PurchasePage(
                                 onEvent = onEvent,
-                                navController = navController
+                                navController = navController,
+                                purchasedByDate = state.purchaseByDate,
+                                viewType = state.viewType,
+                                totalPurchase = state.purchaseTotal,
+                                purchasedByItem = state.purchaseGroupedByItem
                             )
                         }
                     }
@@ -221,11 +271,13 @@ fun CashFlowScreen(
             onEvent = onEvent,
             filters = when(state.userFilterType){
                UserFilterType.ENTRY -> state.entryType
-                UserFilterType.MEMBERS -> emptyList()
+                UserFilterType.MEMBERS -> state.members
                 UserFilterType.INCOME -> state.incomeCategory
                 UserFilterType.EXPENSE -> state.expenseCategory
+                UserFilterType.STATUS -> state.status
             },
-            selectedFilterType = state.userFilterType
+            selectedFilterType = state.userFilterType,
+            tabs = state.selectedTabIndex
         )
 
         DeleteDialog(
@@ -233,7 +285,7 @@ fun CashFlowScreen(
             showDialog = state.showDeleteDialog,
             onEvent = onEvent,
             selectedIncomeExpense = state.selectedIncomeExpense,
-            type = state.vewType
+            type = state.viewType
         )
 
     }

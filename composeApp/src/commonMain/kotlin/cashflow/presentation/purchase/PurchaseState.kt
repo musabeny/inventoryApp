@@ -1,5 +1,7 @@
 package cashflow.presentation.purchase
 
+import cashflow.domain.model.purchase.BillAndItems
+import cashflow.domain.model.purchase.BillItem
 import cashflow.domain.model.purchase.PurchaseItem
 import core.util.UiText
 import kotlinx.datetime.LocalDate
@@ -16,5 +18,9 @@ data class PurchaseState(
     val itemName:String = "",
     val price:String = "",
     val billError:UiText? = null,
-    val itemError:UiText? = null
+    val itemError:UiText? = null,
+    val billItems: BillAndItems? = null,
+    val showDialog:Boolean = false,
+    val selectedItem: BillItem? = null,
+    val selectedIndex:Int? = null
 )

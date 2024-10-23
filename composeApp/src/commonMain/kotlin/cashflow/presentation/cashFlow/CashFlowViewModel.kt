@@ -2,14 +2,21 @@ package cashflow.presentation.cashFlow
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cashflow.data.mapper.toPurchaseDetail
+import cashflow.data.mapper.toPurchaseGroupByItem
+import cashflow.domain.enums.CashFlowTabs
 import cashflow.domain.enums.IncomeExpenseType
 import cashflow.domain.enums.ListViewType
 import cashflow.domain.enums.UserFilterType
 import cashflow.domain.model.FilterType
 import cashflow.domain.model.IncomeExpense
+import cashflow.domain.model.purchase.BillAndItems
 import cashflow.domain.repository.CashFlowRepository
+import cashflow.domain.repository.PurchaseRepository
 import cashflow.domain.usecase.CashFlowUseCases
+import cashflow.domain.usecase.PurchaseUseCase
 import core.navigation.Routes
+import core.util.BILL_ID
 import core.util.CATEGORY_ID
 import core.util.IS_INCOME_OR_EXPENSE
 import core.util.UiEvent
@@ -17,18 +24,19 @@ import core.util.UiText
 import database.model.CategoryIdAndIsIncomeOrExpense
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.all
+import inventoryapp.composeapp.generated.resources.created
+import inventoryapp.composeapp.generated.resources.draft
+import inventoryapp.composeapp.generated.resources.enter_amount
 import inventoryapp.composeapp.generated.resources.expense
 import inventoryapp.composeapp.generated.resources.income
+import inventoryapp.composeapp.generated.resources.selectCategory
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -47,7 +55,9 @@ class CashFlowViewModel(
     private val useCases: CashFlowUseCases,
     private val categoryRepository: CategoryRepository,
     private val productUseCase: ProductUseCase,
-    private val cashFlowRepository: CashFlowRepository
+    private val cashFlowRepository: CashFlowRepository,
+    private val purchaseRepository: PurchaseRepository,
+    private val purchaseUseCase: PurchaseUseCase
 ):ViewModel() {
     private val _state = MutableStateFlow<CashFlowState>(CashFlowState())
     val state = _state.asStateFlow()
@@ -55,45 +65,16 @@ class CashFlowViewModel(
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    private  val incomeExpenseTest = MutableStateFlow<List<IncomeExpense>>(emptyList())
-
     private val now = Clock.System.todayIn(TimeZone.currentSystemDefault())
-    private val initDateRange = useCases.dateRange(now)
-    private val _incomeExpenseData =
-//        .getIncomeExpense(_state.value.dateRange?.start ?:initDateRange.start,_state.value.dateRange?.endInclusive?:initDateRange.endInclusive )
-    incomeExpenseTest
-        .map {incomeExpenseList ->
-            println("incomeExpense in filter ${incomeExpenseList.size}")
-            if(
-                _state.value.incomeCategory.map { it.isChecked }.contains(true) ||
-                _state.value.expenseCategory.map { it.isChecked }.contains(true)||
-                _state.value.entryType.filter { it.id != 0L }.map { it.isChecked }.contains(true)
-            )
 
-                incomeExpenseList.filter { incomeExpense ->
-                    (incomeExpense.category.id in _state.value.incomeCategory.filter { income -> income.isChecked }.map { it.id }) ||
-                            (incomeExpense.category.id in _state.value.expenseCategory.filter { expense -> expense.isChecked }.map { it.id }) ||
-                            (incomeExpense.isIncomeOrExpense.toLong() in _state.value.entryType.filter { entry -> entry.isChecked && entry.id != 0L }.map { it.id })
-
-                }
-            else incomeExpenseList
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000L),
-            emptyList()
-        )
 
     init {
        onEvent(CashFlowEvent.ThisWeek)
        onEvent(CashFlowEvent.Categories)
        onEvent(CashFlowEvent.GetIncomeExpense)
+       onEvent(CashFlowEvent.PurchasedItems)
        filterCategoryList()
-
     }
-
-
-
 
     fun onEvent(event: CashFlowEvent){
         when(event){
@@ -118,7 +99,12 @@ class CashFlowViewModel(
                _state.update {
                    it.copy(dateRange = event.dateRange)
                }
-               onEvent(CashFlowEvent.GetIncomeExpense)
+               if(_state.value.selectedTabIndex == CashFlowTabs.INCOME){
+                   onEvent(CashFlowEvent.GetIncomeExpense)
+               }else{
+                   onEvent(CashFlowEvent.PurchasedItems)
+               }
+
            }
            is CashFlowEvent.Categories ->categories()
            is CashFlowEvent.ShowIncomeExpenseForm ->{
@@ -189,9 +175,14 @@ class CashFlowViewModel(
             }
            is CashFlowEvent.ChangeViewType ->{
                _state.update {
-                   it.copy(vewType = event.view)
+                   it.copy(viewType = event.view)
                }
-               selectedFilteredIncomeExpense()
+               if(_state.value.selectedTabIndex == CashFlowTabs.INCOME){
+                   selectedFilteredIncomeExpense()
+               }else{
+                  onEvent(CashFlowEvent.PurchasedItems)
+               }
+
 
            }
            is CashFlowEvent.ShowFilterSheet ->{
@@ -240,6 +231,47 @@ class CashFlowViewModel(
             is CashFlowEvent.GoToPurchase ->{
                 event.navController.navigate(Routes.Purchase.route)
             }
+            is CashFlowEvent.PurchasedItems -> purchasedItems()
+            is CashFlowEvent.SelectedPageIndex ->{
+                _state.update {
+                    it.copy(selectedTabIndex = if(event.index == CashFlowTabs.INCOME.index)CashFlowTabs.INCOME else CashFlowTabs.PURCHASE)
+                }
+                _state.update {
+                    it.copy(userFilterType = if(event.index == CashFlowTabs.INCOME.index) UserFilterType.ENTRY else UserFilterType.MEMBERS )
+                }
+
+                if(_state.value.selectedTabIndex == CashFlowTabs.INCOME){
+                    selectedFilteredIncomeExpense()
+                }else{
+                    onEvent(CashFlowEvent.PurchasedItems)
+                }
+            }
+            is CashFlowEvent.MemberCategory ->filters(UserFilterType.MEMBERS)
+            is CashFlowEvent.StatusCategory ->filters(UserFilterType.STATUS)
+            is CashFlowEvent.Search ->{
+                if(_state.value.selectedTabIndex == CashFlowTabs.PURCHASE){
+                    searchPurchaseItem(event.text)
+                }else{
+                    searchIncomeExpense(event.text)
+                }
+
+            }
+            is CashFlowEvent.ClearSearchText ->{
+                _state.update {
+                    it.copy(searchText = "")
+                }
+                if(_state.value.selectedTabIndex == CashFlowTabs.INCOME){
+                   onEvent(CashFlowEvent.GetIncomeExpense)
+                }else{
+                    onEvent(CashFlowEvent.PurchasedItems)
+                }
+            }
+            is CashFlowEvent.NavigateToPurchaseReceipt ->{
+                viewModelScope.launch {
+                    _uiEvent.send(UiEvent.Navigate(Routes.PurchaseReceipt.route.replace("{$BILL_ID}","${event.billId}")))
+                }
+
+            }
            else -> {}
         }
     }
@@ -262,11 +294,11 @@ class CashFlowViewModel(
            val category  = _state.value.selectedCategory
            val amount = _state.value.amount
            if( category== null){
-               sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Please select category")))
+               sendEvent(UiEvent.ShowSnackBar(UiText.StringResources(Res.string.selectCategory)))
                return@launch
            }
            if(amount.isNullOrBlank()){
-               sendEvent(UiEvent.ShowSnackBar(UiText.DynamicText("Amount can not be empty")))
+               sendEvent(UiEvent.ShowSnackBar(UiText.StringResources(Res.string.enter_amount)))
                return@launch
            }
            val amountInNumber = amount.toDoubleOrNull()
@@ -324,11 +356,7 @@ class CashFlowViewModel(
       onEvent(CashFlowEvent.GetIncomeExpense)
     }
 
-    private  fun sendEvent(uiEvent: UiEvent){
-        viewModelScope.launch {
-            _uiEvent.send(uiEvent)
-        }
-    }
+
 
     private fun filters(filter: UserFilterType){
         viewModelScope.launch {
@@ -343,9 +371,26 @@ class CashFlowViewModel(
                         it.copy(entryType = entryTypes)
                     }
                 }
-                UserFilterType.MEMBERS -> {}
+                UserFilterType.MEMBERS -> {
+                    val members = listOf(
+                        FilterType(0,getString(Res.string.all)),
+                        FilterType(1,"musabeni14@gmail.com"),
+                    )
+                    _state.update {
+                        it.copy(members = members)
+                    }
+                }
                 UserFilterType.INCOME -> getCategories(IncomeExpenseType.INCOME.value)
                 UserFilterType.EXPENSE -> getCategories(IncomeExpenseType.EXPENSE.value)
+                UserFilterType.STATUS ->{
+                    val status = listOf(
+                        FilterType(0,getString(Res.string.draft)),
+                        FilterType(1,getString(Res.string.created)),
+                    )
+                    _state.update {
+                        it.copy(status = status)
+                    }
+                }
             }
         }
     }
@@ -373,7 +418,9 @@ class CashFlowViewModel(
                 }
             }
             UserFilterType.MEMBERS -> {
-
+                _state.update {
+                    it.copy(members = _state.value.members.map {filter -> if(filter == selectedFilter) filter.copy(isChecked = isChecked) else filter })
+                }
             }
             UserFilterType.INCOME -> {
                 _state.update {
@@ -385,8 +432,18 @@ class CashFlowViewModel(
                     it.copy(expenseCategory = _state.value.expenseCategory.map {filter -> if(filter == selectedFilter) filter.copy(isChecked = isChecked) else filter })
                 }
             }
+            UserFilterType.STATUS ->{
+                _state.update {
+                    it.copy(status = _state.value.status.map {filter -> if(filter == selectedFilter) filter.copy(isChecked = isChecked) else filter })
+                }
+            }
         }
-        selectedFilteredIncomeExpense()
+        if(_state.value.selectedTabIndex == CashFlowTabs.INCOME){
+            selectedFilteredIncomeExpense()
+        }else{
+            purchasedItems()
+        }
+
     }
     private fun selectedFilteredIncomeExpense(){
         _state.value.dateRange?.let {dateRange ->
@@ -410,6 +467,8 @@ class CashFlowViewModel(
         onEvent(CashFlowEvent.IncomeCategory)
         onEvent(CashFlowEvent.ExpenseCategory)
         onEvent(CashFlowEvent.GetIncomeExpense)
+        onEvent(CashFlowEvent.MemberCategory)
+        onEvent(CashFlowEvent.StatusCategory)
         onEvent(CashFlowEvent.ShowFilterSheet(false))
     }
 
@@ -423,7 +482,7 @@ class CashFlowViewModel(
                 it.copy(totalIncome = "${incomeExpenses.filter { it.isIncomeOrExpense == IncomeExpenseType.INCOME.value }.sumOf { it.amount }}")
             }
 
-            if(_state.value.vewType == ListViewType.LIST){
+            if(_state.value.viewType == ListViewType.LIST){
                 _state.update {
                     it.copy(incomeExpensesGroup = mapOf())
                 }
@@ -443,6 +502,98 @@ class CashFlowViewModel(
 
 
         } .launchIn(viewModelScope)
+    }
+    private fun purchasedItems(){
+        if(_state.value.status.any { it.isChecked }){
+            filteredPurchasedItem()
+        }else{
+            nonFilteredPurchasedItem()
+        }
+    }
+    private fun filteredPurchasedItem(){
+        _state.value.dateRange?.let {dateRange ->
+            val filteredPurchasedItem = purchaseRepository.purchasesFiltered(dateRange.start,dateRange.endInclusive,_state.value.status.filter { it.isChecked }.map { if(it.id == 1L) it.copy(isChecked = false) else it }.map { it.isChecked })
+             getPurchasedItem(filteredPurchasedItem)
+        }
+
+    }
+    private fun nonFilteredPurchasedItem(){
+        state.value.dateRange?.let {dateRange ->
+            val purchasedItem =   purchaseRepository.purchases(dateRange.start,dateRange.endInclusive)
+            getPurchasedItem(purchasedItem)
+        }
+    }
+    private fun getPurchasedItem(purchasedItem: Flow<List<BillAndItems>>){
+        purchasedItem.onEach {purchaseItems ->
+            _state.update {
+                it.copy(purchaseTotal = "${purchaseItems.map { it.items.sumOf {item-> item.price } }.sumOf { it }}")
+            }
+            if(_state.value.viewType == ListViewType.LIST){
+                _state.update {
+                    it.copy(purchaseGroupedByItem = mapOf())
+                }
+                _state.update {
+                    it.copy(purchaseByDate = purchaseItems.map { it.toPurchaseDetail() }.groupBy { it.dateCreated })
+                }
+            }else{
+                _state.update {
+                    it.copy(purchaseByDate = mapOf())
+                }
+                val purchased =  purchaseItems.map { it.items.map { it.toPurchaseGroupByItem(purchaseUseCase) } }.flatten().groupBy { it.name }
+                _state.update {
+                    it.copy(purchaseGroupedByItem = purchased)
+                }
+            }
+
+
+        }.launchIn(viewModelScope)
+    }
+
+    private fun searchPurchaseItem(searchText:String){
+        viewModelScope.launch {
+            _state.update {
+                it.copy(searchText = searchText)
+            }
+            if(_state.value.searchText.isEmpty()){
+                nonFilteredPurchasedItem()
+            }else{
+                _state.value.dateRange?.let {dateRange ->
+
+                    val result = if(_state.value.viewType == ListViewType.GROUP)
+                        purchaseRepository.searchedByItemName(dateRange.start,dateRange.endInclusive,"*${_state.value.searchText}*")
+                    else
+                        purchaseRepository.searchedByBillOrNote(dateRange.start,dateRange.endInclusive,"*${_state.value.searchText}*")
+                    getPurchasedItem(result)
+                }
+            }
+
+        }
+    }
+    private fun searchIncomeExpense(searchText:String){
+        viewModelScope.launch {
+            _state.update {
+                it.copy(searchText = searchText)
+            }
+            if (_state.value.searchText.isEmpty()){
+                 onEvent(CashFlowEvent.GetIncomeExpense)
+            }else{
+                _state.value.dateRange?.let {dateRange ->
+                    val filteredExpenseIncome =if(_state.value.viewType == ListViewType.LIST){
+                        cashFlowRepository.searchedByCategoryOrNote(dateRange.start,dateRange.endInclusive,"*${_state.value.searchText}*")
+                    }else{
+                        cashFlowRepository.searchedByCategory(dateRange.start,dateRange.endInclusive,"*${_state.value.searchText}*")
+                    }
+                    incomeExpenseData(filteredExpenseIncome)
+                }
+
+            }
+        }
+    }
+
+    private  fun sendEvent(uiEvent: UiEvent){
+        viewModelScope.launch {
+            _uiEvent.send(uiEvent)
+        }
     }
 
 

@@ -1,6 +1,8 @@
 package database.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Fts4
 import androidx.room.PrimaryKey
 import kotlinx.datetime.LocalDate
 
@@ -13,4 +15,13 @@ data class IncomeExpenseEntity(
     val isIncomeOrExpense:Int,
     val dateCreated:LocalDate
 
+)
+
+
+@Entity
+@Fts4(contentEntity = IncomeExpenseEntity::class)
+data class IncomeExpenseFts(
+    @ColumnInfo(name = "rowid")
+    @PrimaryKey val id:Long,
+    val note:String?,
 )

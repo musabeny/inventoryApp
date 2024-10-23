@@ -5,7 +5,7 @@ import androidx.room.Relation
 import database.entity.CategoryEntity
 import database.entity.IncomeExpenseEntity
 
-data class CategoryAndIncomeExpense(
+data class IncomeExpenseAndCategory(
     @Embedded val incomeExpense:IncomeExpenseEntity,
     @Relation(
       parentColumn = "categoryId",
@@ -13,4 +13,6 @@ data class CategoryAndIncomeExpense(
     )
     val category: CategoryEntity
 )
+
+
 

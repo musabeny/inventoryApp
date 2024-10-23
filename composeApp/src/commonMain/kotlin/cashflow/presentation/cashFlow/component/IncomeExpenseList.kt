@@ -49,7 +49,6 @@ fun IncomeExpenseList(
     modifier: Modifier,
     onEvent: (CashFlowEvent) -> Unit,
     groupedByDate:Map<LocalDate, List<IncomeExpense>>,
-
     header:@Composable () -> Unit
 ){
 

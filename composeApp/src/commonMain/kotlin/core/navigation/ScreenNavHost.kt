@@ -17,6 +17,9 @@ import cashflow.presentation.customCalender.CalenderScreen
 import cashflow.presentation.customCalender.CalenderViewModel
 import cashflow.presentation.purchase.PurchaseScreen
 import cashflow.presentation.purchase.PurchaseViewModel
+import cashflow.presentation.purchaseReceipt.PurchaseReceiptScreen
+import cashflow.presentation.purchaseReceipt.PurchaseReceiptViewModel
+import core.util.BILL_ID
 import core.util.CATEGORY_ID
 import core.util.IS_INCOME_OR_EXPENSE
 import core.util.PRODUCT_ID
@@ -61,7 +64,9 @@ fun ScreenNavHost(
                 onEvent = viewModel::onEvent,
                 navController = navHostController,
                 inventoryEvent = inventoryViewModel::onEvent,
-                inventoryState = inventoryState
+                inventoryState = inventoryState,
+                snackBarHost = snackBarHost,
+                uiEvent = viewModel.uiEvent
             )
         }
 
@@ -146,16 +151,44 @@ fun ScreenNavHost(
         }
 
 
-        composable(route = Routes.Purchase.route){
+        composable(
+            route = Routes.Purchase.route,
+            arguments = listOf(
+                navArgument(BILL_ID){type = NavType.StringType}
+            )
+        ){
             val viewModel = koinViewModel<PurchaseViewModel>()
             val  state = viewModel.state.collectAsState().value
+            val billId = it.arguments?.getString(BILL_ID)?.toLongOrNull()
             PurchaseScreen(
                 state = state,
                 onEvent = viewModel::onEvent,
                 navController = navHostController,
                 snackBarHost = snackBarHost,
-                uiEvent = viewModel.uiEvent
+                uiEvent = viewModel.uiEvent,
+                billId = billId
             )
+        }
+
+        composable(
+            route = Routes.PurchaseReceipt.route,
+            arguments = listOf(
+                navArgument(BILL_ID){type = NavType.StringType}
+            )
+        ){
+            val billId = it.arguments?.getString(BILL_ID)?.toLongOrNull()
+            val viewModel = koinViewModel<PurchaseReceiptViewModel>()
+            val state = viewModel.state.collectAsState().value
+
+            PurchaseReceiptScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                snackBarHost = snackBarHost,
+                uiEvent = viewModel.uiEvent,
+                navController = navHostController,
+                billId = billId
+            )
+
         }
     }
 }

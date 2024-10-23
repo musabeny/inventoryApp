@@ -88,6 +88,9 @@
     <string name="no">No</string>
     <string name="are_you_sure_you_want_to_delete_item">Are You Sure You Want To Delete The Item?</string>
     <string name="are_you_sure_you_want_to_delete_category_and_transaction">Are You Sure You Want To Delete The Category and All the Transaction  in it?</string>
+    <string name="status">Status</string>
+    <string name="created">Created</string>
+    <string name="search">Search</string>
 
     //Purchase Screen
     <string name="new_purchase">New Purchase</string>
@@ -96,7 +99,18 @@
     <string name="price">Price</string>
     <string name="bill_title">Bill Title</string>
     <string name="create_purchase">Create Purchase</string>
+    <string name="update_purchase">Update Purchase</string>
     <string name="save_draft">Save Draft</string>
     <string name="bill_can_not_empty">Bill can not be empty</string>
     <string name="add_atleast_item">Add Atleast One Item</string>
+    <string name="total">Total</string>
+    <string name="draft">Draft</string>
+    <string name="item_count">%1$s Items </string>
+    <string name="remove_this_item">Are you sure you want to remove this item </string>
+
+    //purchase receipt screen
+    <string name="purchase_receipt">Purchase Receipt </string>
+    <string name="edit">Edit </string>
+    <string name="sno">S.No </string>
+
 </resources>

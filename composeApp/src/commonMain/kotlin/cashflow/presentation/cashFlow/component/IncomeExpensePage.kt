@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cashflow.domain.enums.IncomeExpenseType
 import cashflow.domain.enums.ListViewType
@@ -49,7 +51,7 @@ fun IncomeExpensePage(
                 onEvent = onEvent,
                 groupedByDate = groupedByDate,
                 ){
-                HeaderIncomeExpense(
+                FilterAndTotalHeader(
                     modifier = Modifier
                         .fillMaxWidth(),
                     viewType = viewType,
@@ -65,7 +67,7 @@ fun IncomeExpensePage(
                 onEvent = onEvent,
                 navController = navController
             ){
-                HeaderIncomeExpense(
+                FilterAndTotalHeader(
                     modifier = Modifier
                         .fillMaxWidth(),
                     viewType = viewType,
@@ -110,7 +112,7 @@ fun IncomeExpenseButton(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         CashFlowButton(
-            modifier = Modifier,
+            modifier = Modifier.padding(8.dp),
             color = MaterialTheme.colorScheme.primary,
             label = Res.string.incomeWithPlus
         ) {
@@ -118,7 +120,7 @@ fun IncomeExpenseButton(
         }
 
         CashFlowButton(
-            modifier = Modifier,
+            modifier = Modifier.padding(8.dp),
             color = MaterialTheme.colorScheme.error,
             label = Res.string.expenseWithMinus
         ) {

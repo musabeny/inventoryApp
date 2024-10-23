@@ -3,6 +3,7 @@ package cashflow.domain.repository
 import cashflow.domain.model.FilterType
 import cashflow.domain.model.IncomeExpense
 import cashflow.domain.model.purchase.Bill
+import cashflow.domain.model.purchase.BillAndItems
 import cashflow.domain.model.purchase.BillItem
 import database.model.CategoryIdAndIsIncomeOrExpense
 import kotlinx.coroutines.flow.Flow
@@ -18,5 +19,9 @@ interface CashFlowRepository {
     suspend fun deleteIncomeCategoryById(incomeExpense: IncomeExpense):Int
     fun getIncomeExpenseByCategoryId(categoryId:Long,isIncomeOrExpense:Int):Flow<List<IncomeExpense>>
     suspend fun deleteByCategoryIdAndIsIncomeOrExpense(categoryIdAndIsIncomeOrExpense: CategoryIdAndIsIncomeOrExpense):Int
+
+    suspend fun searchedByCategoryOrNote(startDate: LocalDate,endDate: LocalDate,searchText:String):Flow<List<IncomeExpense>>
+
+    suspend fun searchedByCategory(startDate: LocalDate,endDate: LocalDate,searchText:String):Flow<List<IncomeExpense>>
 
 }

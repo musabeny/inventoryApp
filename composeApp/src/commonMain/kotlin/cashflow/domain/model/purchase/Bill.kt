@@ -7,7 +7,7 @@ import kotlinx.datetime.LocalDate
 data class Bill(
      val id:Long?,
     val billTitle:String,
-    val note:String,
+    val note:String?,
     val isDraft:Boolean,
     val dateCreated: LocalDate,
 )

@@ -14,11 +14,11 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.StringResource
@@ -29,7 +29,7 @@ fun CustomTextField(
     modifier: Modifier,
     onValue:(String) -> Unit = {},
     clearText:() -> Unit = {},
-    errorMessage: StringResource?,
+    errorMessage: StringResource? = null,
     value:String = "",
     keyboardType: KeyboardType = KeyboardType.Text,
     showTrailingIcon:Boolean = false,
@@ -38,7 +38,9 @@ fun CustomTextField(
     hintStyle: TextStyle = MaterialTheme.typography.headlineSmall,
     textColor: Color = Color.Black,
     textSize: TextUnit = 18.sp,
-    fontWeight: FontWeight = FontWeight.ExtraBold
+    fontWeight: FontWeight = FontWeight.ExtraBold,
+    leadingIcon: ImageVector = Icons.Filled.Clear,
+    showLeadingIcon:Boolean = false
 ){
     TextField(
         modifier = modifier,
@@ -72,26 +74,26 @@ fun CustomTextField(
                )
            }
         },
+        leadingIcon = {
+            if (showLeadingIcon){
+                Icon(
+                    modifier = Modifier.clickable {
+                        clearText()
+                    },
+                    imageVector = leadingIcon,
+                    contentDescription = "Clear icon",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+
+        },
         value = value,
         textStyle = TextStyle(
             background = MaterialTheme.colorScheme.onPrimary,
             color = textColor,
             fontWeight = FontWeight.Bold,
-//            fontSize = textSize
         ),
         onValueChange = onValue,
-        supportingText = {
-            AnimatedVisibility(visible = errorMessage != null){
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = if(errorMessage != null) stringResource(errorMessage) else "",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.error,
-                    textAlign = TextAlign.End
-                )
-            }
-
-        },
         isError = errorMessage != null,
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType

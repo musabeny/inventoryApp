@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "bd2649a19cef9592eeae674ff589701e",
+    "identityHash": "d5b3823f06dc73071023668ce8b46909",
     "entities": [
       {
         "tableName": "ProductEntity",
@@ -235,7 +235,7 @@
       },
       {
         "tableName": "BillEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `billTitle` TEXT NOT NULL, `note` TEXT NOT NULL, `isDraft` INTEGER NOT NULL, `dateCreated` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `billTitle` TEXT NOT NULL, `note` TEXT, `isDraft` INTEGER NOT NULL, `dateCreated` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -251,8 +251,7 @@
           {
             "fieldPath": "note",
             "columnName": "note",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "isDraft",
@@ -276,7 +275,7 @@
       },
       {
         "tableName": "BillItemEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `itemName` TEXT NOT NULL, `price` REAL NOT NULL, `billId` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `itemName` TEXT NOT NULL, `price` REAL NOT NULL, `bill_id` INTEGER, FOREIGN KEY(`bill_id`) REFERENCES `BillEntity`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -297,9 +296,8 @@
           },
           {
             "fieldPath": "billId",
-            "columnName": "billId",
-            "affinity": "INTEGER",
-            "notNull": true
+            "columnName": "bill_id",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -307,12 +305,145 @@
           "columnNames": [
             "id"
           ]
-        }
+        },
+        "indices": [
+          {
+            "name": "index_BillItemEntity_bill_id",
+            "unique": false,
+            "columnNames": [
+              "bill_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_BillItemEntity_bill_id` ON `${TABLE_NAME}` (`bill_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "BillEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "bill_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "BillItemFts",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`itemName` TEXT NOT NULL, content=`BillItemEntity`)",
+        "fields": [
+          {
+            "fieldPath": "itemName",
+            "columnName": "itemName",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "rowid"
+          ]
+        },
+        "ftsVersion": "FTS4",
+        "ftsOptions": {
+          "tokenizer": "simple",
+          "tokenizerArgs": [],
+          "contentTable": "BillItemEntity",
+          "languageIdColumnName": "",
+          "matchInfo": "FTS4",
+          "notIndexedColumns": [],
+          "prefixSizes": [],
+          "preferredOrder": "ASC"
+        },
+        "contentSyncTriggers": [
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_BillItemFts_BEFORE_UPDATE BEFORE UPDATE ON `BillItemEntity` BEGIN DELETE FROM `BillItemFts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_BillItemFts_BEFORE_DELETE BEFORE DELETE ON `BillItemEntity` BEGIN DELETE FROM `BillItemFts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_BillItemFts_AFTER_UPDATE AFTER UPDATE ON `BillItemEntity` BEGIN INSERT INTO `BillItemFts`(`docid`, `itemName`) VALUES (NEW.`rowid`, NEW.`itemName`); END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_BillItemFts_AFTER_INSERT AFTER INSERT ON `BillItemEntity` BEGIN INSERT INTO `BillItemFts`(`docid`, `itemName`) VALUES (NEW.`rowid`, NEW.`itemName`); END"
+        ]
+      },
+      {
+        "tableName": "BillFts",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`billTitle` TEXT NOT NULL, `note` TEXT, content=`BillEntity`)",
+        "fields": [
+          {
+            "fieldPath": "billTitle",
+            "columnName": "billTitle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "rowid"
+          ]
+        },
+        "ftsVersion": "FTS4",
+        "ftsOptions": {
+          "tokenizer": "simple",
+          "tokenizerArgs": [],
+          "contentTable": "BillEntity",
+          "languageIdColumnName": "",
+          "matchInfo": "FTS4",
+          "notIndexedColumns": [],
+          "prefixSizes": [],
+          "preferredOrder": "ASC"
+        },
+        "contentSyncTriggers": [
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_BillFts_BEFORE_UPDATE BEFORE UPDATE ON `BillEntity` BEGIN DELETE FROM `BillFts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_BillFts_BEFORE_DELETE BEFORE DELETE ON `BillEntity` BEGIN DELETE FROM `BillFts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_BillFts_AFTER_UPDATE AFTER UPDATE ON `BillEntity` BEGIN INSERT INTO `BillFts`(`docid`, `billTitle`, `note`) VALUES (NEW.`rowid`, NEW.`billTitle`, NEW.`note`); END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_BillFts_AFTER_INSERT AFTER INSERT ON `BillEntity` BEGIN INSERT INTO `BillFts`(`docid`, `billTitle`, `note`) VALUES (NEW.`rowid`, NEW.`billTitle`, NEW.`note`); END"
+        ]
+      },
+      {
+        "tableName": "IncomeExpenseFts",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`note` TEXT, content=`IncomeExpenseEntity`)",
+        "fields": [
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "rowid"
+          ]
+        },
+        "ftsVersion": "FTS4",
+        "ftsOptions": {
+          "tokenizer": "simple",
+          "tokenizerArgs": [],
+          "contentTable": "IncomeExpenseEntity",
+          "languageIdColumnName": "",
+          "matchInfo": "FTS4",
+          "notIndexedColumns": [],
+          "prefixSizes": [],
+          "preferredOrder": "ASC"
+        },
+        "contentSyncTriggers": [
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_IncomeExpenseFts_BEFORE_UPDATE BEFORE UPDATE ON `IncomeExpenseEntity` BEGIN DELETE FROM `IncomeExpenseFts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_IncomeExpenseFts_BEFORE_DELETE BEFORE DELETE ON `IncomeExpenseEntity` BEGIN DELETE FROM `IncomeExpenseFts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_IncomeExpenseFts_AFTER_UPDATE AFTER UPDATE ON `IncomeExpenseEntity` BEGIN INSERT INTO `IncomeExpenseFts`(`docid`, `note`) VALUES (NEW.`rowid`, NEW.`note`); END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_IncomeExpenseFts_AFTER_INSERT AFTER INSERT ON `IncomeExpenseEntity` BEGIN INSERT INTO `IncomeExpenseFts`(`docid`, `note`) VALUES (NEW.`rowid`, NEW.`note`); END"
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bd2649a19cef9592eeae674ff589701e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd5b3823f06dc73071023668ce8b46909')"
     ]
   }
 }

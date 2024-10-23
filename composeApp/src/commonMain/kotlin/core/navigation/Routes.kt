@@ -1,5 +1,6 @@
 package core.navigation
 
+import core.util.BILL_ID
 import core.util.CATEGORY_ID
 import core.util.IS_INCOME_OR_EXPENSE
 import core.util.PRODUCT_ID
@@ -60,8 +61,15 @@ sealed class Routes(
         title = Res.string.inventory,
         defaultIcon = null
     )
-    data object Purchase:Routes(route = "purchase",
+    data object Purchase:Routes(
+        route = "purchase/{$BILL_ID}",
         title = Res.string.purchase,
+        defaultIcon = null
+    )
+
+    data object PurchaseReceipt:Routes(
+        route = "purchaseReceipt/{$BILL_ID}",
+        title = Res.string.inventory,
         defaultIcon = null
     )
 }

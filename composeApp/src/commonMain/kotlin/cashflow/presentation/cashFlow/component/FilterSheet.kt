@@ -33,6 +33,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import cashflow.domain.enums.CashFlowTabs
+import cashflow.domain.enums.ListViewType
 import cashflow.domain.enums.UserFilterType
 import cashflow.domain.model.FilterType
 import cashflow.presentation.cashFlow.CashFlowEvent
@@ -43,6 +45,7 @@ import inventoryapp.composeapp.generated.resources.expense_category
 import inventoryapp.composeapp.generated.resources.filter
 import inventoryapp.composeapp.generated.resources.income_category
 import inventoryapp.composeapp.generated.resources.members
+import inventoryapp.composeapp.generated.resources.status
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -53,7 +56,8 @@ fun FilterSheet(
     showSheet:Boolean,
     onEvent: (CashFlowEvent)-> Unit,
     filters: List<FilterType>,
-    selectedFilterType: UserFilterType
+    selectedFilterType: UserFilterType,
+    tabs: CashFlowTabs
 ){
     if(showSheet){
         ModalBottomSheet(
@@ -76,7 +80,8 @@ fun FilterSheet(
                  modifier = Modifier.fillMaxWidth(),
                  onEvent = onEvent,
                  filters = filters,
-                 selectedFilterType = selectedFilterType
+                 selectedFilterType = selectedFilterType,
+                 tabs = tabs
              )
 
          }
@@ -143,7 +148,8 @@ fun BodyFilter(
     modifier: Modifier,
     onEvent: (CashFlowEvent) -> Unit,
     filters: List<FilterType>,
-    selectedFilterType: UserFilterType
+    selectedFilterType: UserFilterType,
+    tabs: CashFlowTabs
 ){
     Row(
         modifier = modifier
@@ -154,7 +160,8 @@ fun BodyFilter(
             .padding(start = 8.dp),
             onEvent = onEvent,
             isSelected = filters.any { it.isChecked },
-            selectedFilterType = selectedFilterType
+            selectedFilterType = selectedFilterType,
+            tabs = tabs
         )
         VerticalDivider(
             modifier = Modifier.fillMaxHeight(),
@@ -200,48 +207,79 @@ fun LeftBodyFilter(
     modifier: Modifier,
     onEvent: (CashFlowEvent) -> Unit,
     isSelected: Boolean,
-    selectedFilterType: UserFilterType
+    selectedFilterType: UserFilterType,
+    tabs: CashFlowTabs
 ){
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-      LeftBodyFilterItem(
-          modifier = Modifier
-              .fillMaxWidth()
-              .clickable {
-                  onEvent(CashFlowEvent.SelectedFilterType(UserFilterType.ENTRY))
-              },
-          text = Res.string.entry_type,
-          isSelected = if(selectedFilterType == UserFilterType.ENTRY) isSelected else false
-      )
-        LeftBodyFilterItem(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                },
-            text = Res.string.members,
-            isSelected =if(selectedFilterType == UserFilterType.MEMBERS) isSelected else false
-        )
-        LeftBodyFilterItem(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    onEvent(CashFlowEvent.SelectedFilterType(UserFilterType.INCOME))
-                },
-            text = Res.string.income_category,
-            isSelected =if(selectedFilterType == UserFilterType.INCOME) isSelected else false
-        )
-        LeftBodyFilterItem(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    onEvent(CashFlowEvent.SelectedFilterType(UserFilterType.EXPENSE))
-                },
-            text = Res.string.expense_category,
-            isSelected = if(selectedFilterType == UserFilterType.EXPENSE) isSelected else false
-        )
+
+    if(tabs == CashFlowTabs.INCOME){
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            LeftBodyFilterItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onEvent(CashFlowEvent.SelectedFilterType(UserFilterType.ENTRY))
+                    },
+                text = Res.string.entry_type,
+                isSelected = if(selectedFilterType == UserFilterType.ENTRY) isSelected else false
+            )
+            LeftBodyFilterItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onEvent(CashFlowEvent.SelectedFilterType(UserFilterType.MEMBERS))
+                    },
+                text = Res.string.members,
+                isSelected =if(selectedFilterType == UserFilterType.MEMBERS) isSelected else false
+            )
+            LeftBodyFilterItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onEvent(CashFlowEvent.SelectedFilterType(UserFilterType.INCOME))
+                    },
+                text = Res.string.income_category,
+                isSelected =if(selectedFilterType == UserFilterType.INCOME) isSelected else false
+            )
+            LeftBodyFilterItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onEvent(CashFlowEvent.SelectedFilterType(UserFilterType.EXPENSE))
+                    },
+                text = Res.string.expense_category,
+                isSelected = if(selectedFilterType == UserFilterType.EXPENSE) isSelected else false
+            )
+        }
+    }else{
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            LeftBodyFilterItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onEvent(CashFlowEvent.SelectedFilterType(UserFilterType.MEMBERS))
+                    },
+                text = Res.string.members,
+                isSelected = if(selectedFilterType == UserFilterType.MEMBERS) isSelected else false
+            )
+            LeftBodyFilterItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onEvent(CashFlowEvent.SelectedFilterType(UserFilterType.STATUS))
+                    },
+                text = Res.string.status,
+                isSelected =if(selectedFilterType == UserFilterType.STATUS) isSelected else false
+            )
+
+        }
     }
+
 }
 
 @Composable

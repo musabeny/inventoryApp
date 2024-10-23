@@ -72,6 +72,11 @@ fun ClosedRange<LocalDate>.toDateMonthYearFormat():String{
 
 }
 
+fun LocalDate.toDateMonthYearFormat():String{
+    return "${this.dayOfMonth} ${this.shortOrFullMontName(true)} ${this.year}"
+
+}
+
 fun LocalDate.shortOrFullMontName(isFullMonthName:Boolean):String{
     val month = this.month.name.lowercase().replaceFirstChar { it.uppercaseChar() }
     return if(isFullMonthName){

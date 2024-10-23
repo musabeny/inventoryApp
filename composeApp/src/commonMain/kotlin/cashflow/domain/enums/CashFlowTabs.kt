@@ -10,13 +10,16 @@ import inventoryapp.composeapp.generated.resources.purchase_item
 import org.jetbrains.compose.resources.StringResource
 
 enum class CashFlowTabs(
-    val label:StringResource
+    val label:StringResource,
+    val index: Int
 ) {
     INCOME(
-        label = Res.string.income_expense
+        label = Res.string.income_expense,
+        index = 0
     ),
     PURCHASE(
-    label = Res.string.purchase
+    label = Res.string.purchase,
+        index = 1
     ),
 
 }

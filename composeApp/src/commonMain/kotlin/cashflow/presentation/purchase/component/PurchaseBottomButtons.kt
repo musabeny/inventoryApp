@@ -10,11 +10,13 @@ import cashflow.presentation.purchase.PurchaseEvent
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.create_purchase
 import inventoryapp.composeapp.generated.resources.save_draft
+import inventoryapp.composeapp.generated.resources.update_purchase
 
 @Composable
 fun PurchaseBottomButtons(
     modifier: Modifier,
-    onEvent: (PurchaseEvent) -> Unit
+    onEvent: (PurchaseEvent) -> Unit,
+    billId:Long? = null
 ){
     Row(
         modifier = modifier
@@ -25,9 +27,9 @@ fun PurchaseBottomButtons(
                 .padding(8.dp),
             containerColor = MaterialTheme.colorScheme.primary,
             textColor = MaterialTheme.colorScheme.onPrimary,
-            label = Res.string.create_purchase
+            label = if(billId == null) Res.string.create_purchase else Res.string.update_purchase
         ){
-            onEvent(PurchaseEvent.SavePurchase)
+            onEvent(PurchaseEvent.SavePurchase(isDraft = false))
         }
         PurchaseButton(
             modifier = Modifier
@@ -37,6 +39,7 @@ fun PurchaseBottomButtons(
             textColor = MaterialTheme.colorScheme.onSecondary,
             label = Res.string.save_draft
         ){
+            onEvent(PurchaseEvent.SavePurchase(isDraft = true))
         }
     }
 }

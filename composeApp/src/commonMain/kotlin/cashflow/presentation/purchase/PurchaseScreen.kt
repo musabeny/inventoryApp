@@ -27,16 +27,19 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import cashflow.data.mapper.toBillItem
 import cashflow.presentation.purchase.component.InputAndTitle
 import cashflow.presentation.purchase.component.NoteAndDate
 import cashflow.presentation.purchase.component.PurchaseBottomButtons
 import cashflow.presentation.purchase.component.PurchaseButton
 import cashflow.presentation.purchase.component.PurchaseItemView
 import core.component.SelectDate
+import core.component.StandardDialog
 import core.util.UiEvent
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.bill_title
 import inventoryapp.composeapp.generated.resources.new_purchase
+import inventoryapp.composeapp.generated.resources.remove_this_item
 import kotlinx.coroutines.flow.Flow
 import org.jetbrains.compose.resources.stringResource
 
@@ -48,9 +51,14 @@ fun PurchaseScreen(
     navController: NavController,
     snackBarHost: SnackbarHostState,
     uiEvent: Flow<UiEvent>,
+    billId: Long?
 ){
     val scrollState  = rememberScrollState()
     LaunchedEffect(true){
+        billId?.let {
+            onEvent(PurchaseEvent.GetPurchaseById(billId))
+        }
+
         uiEvent.collect{event ->
             when(event){
                 is UiEvent.Navigate -> {}
@@ -158,7 +166,23 @@ fun PurchaseScreen(
 
            PurchaseBottomButtons(
                modifier = Modifier.fillMaxWidth(),
-               onEvent = onEvent
+               onEvent = onEvent,
+               billId = billId
+           )
+
+           StandardDialog(
+               modifier = Modifier,
+               message = stringResource(Res.string.remove_this_item),
+               onConfirm = {
+                   if(state.selectedIndex != null ){
+                       onEvent(PurchaseEvent.RemovePurchaseItem(state.selectedIndex,state.selectedItem?.toBillItem()))
+
+                   }
+               },
+               onCancel = {
+                   onEvent(PurchaseEvent.ShowDialog(false))
+               },
+               showDialog = state.showDialog
            )
        }
 

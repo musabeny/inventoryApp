@@ -8,5 +8,5 @@ data class BillItem(
    val id:Long? ,
     val itemName:String,
     val price:Double,
-    val billId:Long
+    val billId:Long?
 )
