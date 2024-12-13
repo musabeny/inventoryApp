@@ -112,5 +112,14 @@
     <string name="purchase_receipt">Purchase Receipt </string>
     <string name="edit">Edit </string>
     <string name="sno">S.No </string>
+    <string name="calculator">Calculator</string>
+    <string name="saved">Saved</string>
+
+    //Calculator Page
+    <string name="cash_in">Cash In: %1$s</string>
+    <string name="add_item">Add Item</string>
+
+    <string name="item">Item %2$d: %1$s</string>
+    <string name="enter_price">Enter Price For %1$s</string>
 
 </resources>

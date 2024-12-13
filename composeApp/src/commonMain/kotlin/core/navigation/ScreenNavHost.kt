@@ -27,6 +27,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import report.presentation.ReportScreen
 import sales.presentation.SalesScreen
+import sales.presentation.SalesViewModel
 import settings.presentation.inventory.InventoryEvent
 import settings.presentation.inventory.InventoryScreen
 import settings.presentation.inventory.InventoryViewModel
@@ -46,13 +47,17 @@ fun ScreenNavHost(
 
 ){
 
-
-    NavHost(navController = navHostController, startDestination = Routes.CashFlow.route){
+    NavHost(navController = navHostController, startDestination = Routes.Sales.route){
         composable(route = Routes.Report.route){
             ReportScreen()
         }
         composable(route = Routes.Sales.route){
-            SalesScreen()
+            val viewModel = koinViewModel<SalesViewModel>()
+            val state = viewModel.state.collectAsState().value
+            SalesScreen(
+                state = state,
+                onEvent = viewModel::onEvent
+            )
         }
 
         composable(route = Routes.CashFlow.route){
