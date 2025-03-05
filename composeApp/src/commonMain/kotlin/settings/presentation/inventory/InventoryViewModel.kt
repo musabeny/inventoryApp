@@ -75,7 +75,6 @@ class InventoryViewModel(
                 _state.update {
                     it.copy(selectedCategory = null)
                 }
-                println("Cashflow action executed ${_state.value.showBottomSheet}")
             }
             is InventoryEvent.SaveCategories ->saveOrUpdateCategory()
             is InventoryEvent.GetProductColor ->{

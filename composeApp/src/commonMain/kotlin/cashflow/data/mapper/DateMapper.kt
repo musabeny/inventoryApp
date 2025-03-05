@@ -4,6 +4,7 @@ import cashflow.domain.enums.DaysOfDate
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
@@ -11,6 +12,10 @@ import kotlinx.datetime.todayIn
 
 fun LocalDate.formatToMonthYear():String{
     return "${this.month.name.lowercase().replaceFirstChar { it.uppercaseChar() }}, ${this.year}"
+}
+
+fun Month.formatMonth():String{
+    return this.toString().lowercase().replaceFirstChar { it.uppercaseChar() }
 }
 
 fun LocalDate.formatToMonthYearWithSpace():String{

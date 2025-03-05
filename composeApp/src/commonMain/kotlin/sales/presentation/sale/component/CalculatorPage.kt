@@ -1,10 +1,7 @@
-package sales.presentation.component
+package sales.presentation.sale.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,10 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,22 +21,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import core.util.isAllDigits
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.add_item
 import inventoryapp.composeapp.generated.resources.cash_in
 import inventoryapp.composeapp.generated.resources.keyboard_return
-import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import sales.domain.enums.ClearAction
-import sales.presentation.SaleEvent
+import sales.domain.model.ItemDetail
+import sales.presentation.sale.SaleEvent
 
 @Composable
 fun CalculatorPage(
@@ -52,7 +44,8 @@ fun CalculatorPage(
     enableZBtn:Boolean,
     enableAtBtn:Boolean,
     enableDotBtn:Boolean,
-    totalCash:String
+    totalCash:String,
+    saveItems:(List<ItemDetail>)->Unit
 ){
    Column(
        modifier = modifier,
@@ -86,7 +79,8 @@ fun CalculatorPage(
           enableOperator = enableOperator,
           onEvent = onEvent,
           totalCash = totalCash,
-          enableZBtn = enableZBtn
+          enableZBtn = enableZBtn,
+          saveItems = saveItems
       )
    }
 
@@ -234,7 +228,8 @@ fun BottomBtn(
     onEvent: (SaleEvent) -> Unit,
     enableOperator:Boolean,
     totalCash:String,
-    enableZBtn:Boolean
+    enableZBtn:Boolean,
+    saveItems:(List<ItemDetail>)->Unit
 ){
    Row(
        modifier = modifier,
@@ -262,7 +257,9 @@ fun BottomBtn(
            label = stringResource(Res.string.cash_in,totalCash),
            textColor = MaterialTheme.colorScheme.onSecondary,
            onClick = {
-
+              onEvent(SaleEvent.Navigate(
+                  saveItems = saveItems
+              ))
            }
        )
    }
@@ -286,9 +283,6 @@ fun VerticalBtn(
                 .weight(1f)
                 .fillMaxWidth()
                 .alpha(if(enableCancelBtn) 1f else 0.4f)
-                .pointerInput(enableCancelBtn){
-                    if(!enableCancelBtn) detectTapGestures {  }
-                }
                 .combinedClickable(
                     onClick = {
                         onEvent(SaleEvent.Clear(ClearAction.SingleCharacter))

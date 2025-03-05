@@ -1,4 +1,4 @@
-package sales.presentation.component
+package sales.presentation.sale.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,9 +21,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.enter_price
+import inventoryapp.composeapp.generated.resources.previous_price
 import org.jetbrains.compose.resources.stringResource
 import sales.domain.enums.ClearAction
-import sales.presentation.SaleEvent
+import sales.presentation.sale.SaleEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +35,8 @@ fun EnterPrice(
     zType:String?,
     changePrice:String,
     enableDotBtn:Boolean,
-    enableEnterBtn:Boolean
+    enableEnterBtn:Boolean,
+    previousPrice:String?
 ){
     if(showDialog){
         BasicAlertDialog(
@@ -64,6 +66,13 @@ fun EnterPrice(
                         )
                     )
 
+                    previousPrice?.let {price ->
+                        Text(
+                            text = stringResource(Res.string.previous_price,price)
+                        )
+                    }
+
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -87,7 +96,8 @@ fun EnterPrice(
                         Button(
                             modifier = Modifier,
                             onClick = {
-                                onEvent(SaleEvent.Clear(
+                                onEvent(
+                                    SaleEvent.Clear(
                                     clear = ClearAction.SingleCharacter,
                                     isChangePrice = true
                                 ))
@@ -132,7 +142,7 @@ fun EnterPrice(
                             onEvent(SaleEvent.Operand("0",true))
                         },
                         btnThree = {
-
+                           onEvent(SaleEvent.SaveTemporaryPrice)
                         }
                     )
 

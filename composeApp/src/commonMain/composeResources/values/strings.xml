@@ -21,6 +21,7 @@
     <string name="show_only">Show only expired (or) about to expire items</string>
     <string name="items_about_to_expire">Items about to expire will be shown based on the alerts set</string>
     <string name="product">Manage Product</string>
+    <string name="add_atleast_one_item">Add atleast one item</string>
 
     <string name="itemName">Item Name</string>
     <string name="itemCode">Item Code</string>
@@ -92,7 +93,7 @@
     <string name="created">Created</string>
     <string name="search">Search</string>
 
-    //Purchase Screen
+<!--    Purchase Screen-->
     <string name="new_purchase">New Purchase</string>
     <string name="add_new_item">Add New Item</string>
     <string name="item_name">Item Name</string>
@@ -108,18 +109,34 @@
     <string name="item_count">%1$s Items </string>
     <string name="remove_this_item">Are you sure you want to remove this item </string>
 
-    //purchase receipt screen
+<!--    purchase receipt screen-->
     <string name="purchase_receipt">Purchase Receipt </string>
     <string name="edit">Edit </string>
     <string name="sno">S.No </string>
     <string name="calculator">Calculator</string>
     <string name="saved">Saved</string>
 
-    //Calculator Page
+<!--    Calculator Page-->
     <string name="cash_in">Cash In: %1$s</string>
     <string name="add_item">Add Item</string>
 
     <string name="item">Item %2$d: %1$s</string>
     <string name="enter_price">Enter Price For %1$s</string>
+<!--    <string name="item_count">Item  %1$s</string>-->
 
+<!--    Payment Screen-->
+    <string name="subtotal">Subtotal</string>
+    <string name="add_tax">Add Tax</string>
+    <string name="add_discount">Add Discount</string>
+    <string name="grand_total">Grand Total</string>
+    <string name="total_item">Total Item</string>
+    <string name="save_for_later">Save For Later</string>
+    <string name="choose_payment_mode">Choose Payment Mode</string>
+
+<!--    Edit Item Screen-->
+    <string name="edit_items">Edit Items</string>
+    <string name="quantity">Quantity</string>
+    <string name="name">Name</string>
+
+    <string name="previous_price">Previous price was %1$s</string>
 </resources>

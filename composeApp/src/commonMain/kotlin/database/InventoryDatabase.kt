@@ -11,6 +11,7 @@ import database.dao.BillDao
 import database.dao.CategoryDao
 import database.dao.IncomeExpenseDao
 import database.dao.ProductDao
+import database.dao.TemporaryPriceDao
 import database.entity.BillEntity
 import database.entity.BillFts
 import database.entity.BillItemEntity
@@ -21,6 +22,7 @@ import database.entity.IncomeExpenseEntity
 import database.entity.IncomeExpenseFts
 import database.entity.ProductEntity
 import database.entity.ProductFts
+import database.entity.TemporaryPriceEntity
 import di.Factory
 
 @Database(
@@ -34,7 +36,8 @@ import di.Factory
         BillItemEntity::class,
         BillItemFts::class,
         BillFts::class,
-        IncomeExpenseFts::class
+        IncomeExpenseFts::class,
+        TemporaryPriceEntity::class
                ],
     version = 1
 )
@@ -45,6 +48,7 @@ abstract class InventoryDatabase:RoomDatabase(),DB {
     abstract fun categoryDao():CategoryDao
     abstract fun incomeExpenseDao():IncomeExpenseDao
     abstract fun billDao():BillDao
+    abstract fun temporaryPriceDao():TemporaryPriceDao
 
     override fun clearAllTables() {
         super.clearAllTables()

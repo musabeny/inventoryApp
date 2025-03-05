@@ -1,8 +1,8 @@
 [versions]
 agp = "8.4.2"
-android-compileSdk = "34"
+android-compileSdk = "35"
 android-minSdk = "24"
-android-targetSdk = "34"
+android-targetSdk = "35"
 androidx-activityCompose = "1.9.3"
 androidx-appcompat = "1.7.0"
 androidx-constraintlayout = "2.2.0"
@@ -12,21 +12,24 @@ androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 compose-plugin = "1.6.11"
 junit = "4.13.2"
-kotlin = "2.0.20"
+kotlin = "2.1.0"
 
 koin = "3.6.0-Beta4"
 koinComposeMultiplatform = "1.2.0-Beta4"
+kotlinxSerializationJson = "1.8.0"
 multiplatformExpressionsEvaluator = "x.y.z"
+multiplatformExpressionsEvaluatorVersion = "1.1.1"
 navigationCompose = "2.8.0-alpha02"
 lifecycleViewModel = "2.8.7"
 
 date-time = "0.6.0"
 #lifecycleViewmodelCompose = "2.8.2"  05
 
-room = "2.7.0-alpha11"
+room = "2.7.0-alpha12"
 ksp = "2.0.10-1.0.24"
 sqlite = "2.5.0-SNAPSHOT"
-media3Common = "1.4.1"
+media3Common = "1.5.1"
+
 
 
 [libraries]
@@ -43,6 +46,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "date-time" }
 
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleViewModel"}
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
@@ -50,6 +54,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinComposeMultiplatform" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinComposeMultiplatform" }
 multiplatform-expressions-evaluator = { module = "io.github.murzagalin:multiplatform-expressions-evaluator", version.ref = "multiplatformExpressionsEvaluator" }
+multiplatform-expressions-evaluator-v111 = { module = "io.github.murzagalin:multiplatform-expressions-evaluator", version.ref = "multiplatformExpressionsEvaluatorVersion" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
@@ -67,3 +72,4 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
+kotlinxSerialization = {id = "org.jetbrains.kotlin.plugin.serialization",version.ref="kotlinxSerializationJson"}

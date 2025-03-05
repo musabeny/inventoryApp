@@ -3,6 +3,7 @@ package core.navigation
 import core.util.BILL_ID
 import core.util.CATEGORY_ID
 import core.util.IS_INCOME_OR_EXPENSE
+import core.util.ITEMS
 import core.util.PRODUCT_ID
 import inventoryapp.composeapp.generated.resources.Res
 import inventoryapp.composeapp.generated.resources.calculate
@@ -69,6 +70,17 @@ sealed class Routes(
 
     data object PurchaseReceipt:Routes(
         route = "purchaseReceipt/{$BILL_ID}",
+        title = Res.string.inventory,
+        defaultIcon = null
+    )
+    data object Payments:Routes(
+        route = "payments",
+        title = Res.string.inventory,
+        defaultIcon = null
+    )
+
+    data object EditItem:Routes(
+        route = "editItem",
         title = Res.string.inventory,
         defaultIcon = null
     )

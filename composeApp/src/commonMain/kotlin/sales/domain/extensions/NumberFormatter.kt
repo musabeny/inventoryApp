@@ -11,3 +11,8 @@ fun Double.removeUnnecessaryDecimals(): String {
         this.toString() // Keep as is if there are meaningful decimal places
     }
 }
+
+fun Int.powerOf():Int{
+  return  this * this
+}
+

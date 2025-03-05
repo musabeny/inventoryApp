@@ -10,18 +10,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cashflow.presentation.cashFlow.CashFlowEvent
+import core.component.CustomIcon
 
 @Composable
 fun DateRange(
@@ -36,7 +35,7 @@ fun DateRange(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        DateIcon(
+        CustomIcon(
             modifier = Modifier.clickable {
                 onEvent(CashFlowEvent.Back)
             },
@@ -51,7 +50,7 @@ fun DateRange(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            DateIcon(
+            CustomIcon(
                 modifier = Modifier.size(38.dp),
                 imageVector = Icons.Filled.DateRange
             )
@@ -67,7 +66,7 @@ fun DateRange(
 
 
 
-        DateIcon(
+        CustomIcon(
             modifier = Modifier
                 .alpha(if(showNextArrow)1f else 0f)
                 .clickable(enabled = showNextArrow) {
@@ -81,15 +80,3 @@ fun DateRange(
     }
 }
 
-@Composable
-fun DateIcon(
-    modifier: Modifier,
-    imageVector:ImageVector
-){
-    Icon(
-        modifier = modifier,
-        imageVector = imageVector,
-        contentDescription = "Date icon",
-        tint = MaterialTheme.colorScheme.primary
-    )
-}

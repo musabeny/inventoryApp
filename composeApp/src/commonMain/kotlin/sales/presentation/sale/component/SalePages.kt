@@ -1,4 +1,4 @@
-package sales.presentation.component
+package sales.presentation.sale.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -23,7 +23,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import sales.domain.enums.SalesTabs
-import sales.presentation.SaleEvent
+import sales.domain.model.ItemDetail
+import sales.presentation.sale.SaleEvent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -37,7 +38,8 @@ fun SalePages(
     enableZBtn: Boolean,
     enableAtBtn: Boolean,
     enableDotBtn: Boolean,
-    onEvent: (SaleEvent) -> Unit
+    onEvent: (SaleEvent) -> Unit,
+    saveItems:(List<ItemDetail>)->Unit
 ){
 
     TabRow(
@@ -104,7 +106,8 @@ fun SalePages(
                         totalCash = totalCash,
                         enableZBtn = enableZBtn,
                         enableAtBtn = enableAtBtn,
-                        enableDotBtn = enableDotBtn
+                        enableDotBtn = enableDotBtn,
+                        saveItems = saveItems
                     )
                 }
                 1->{

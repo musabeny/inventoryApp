@@ -1,4 +1,4 @@
-package sales.presentation.component
+package sales.presentation.sale.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

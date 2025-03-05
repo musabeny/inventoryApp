@@ -10,7 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import cashflow.presentation.breakDown.BreakDownScreen
 import cashflow.presentation.breakDown.BreakDownViewModel
-import cashflow.presentation.cashFlow.CashFlowEvent
 import cashflow.presentation.cashFlow.CashFlowScreen
 import cashflow.presentation.cashFlow.CashFlowViewModel
 import cashflow.presentation.customCalender.CalenderScreen
@@ -22,18 +21,25 @@ import cashflow.presentation.purchaseReceipt.PurchaseReceiptViewModel
 import core.util.BILL_ID
 import core.util.CATEGORY_ID
 import core.util.IS_INCOME_OR_EXPENSE
+import core.util.ITEMS
 import core.util.PRODUCT_ID
+import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
+import sales.presentation.payment.PaymentScreen
 import report.presentation.ReportScreen
-import sales.presentation.SalesScreen
-import sales.presentation.SalesViewModel
-import settings.presentation.inventory.InventoryEvent
+import sales.domain.model.ItemDetail
+import sales.presentation.components.viewModel.ItemViewModel
+import sales.presentation.editItem.EditItemScreen
+import sales.presentation.editItem.EditItemViewModel
+import sales.presentation.payment.PaymentViewModel
+import sales.presentation.sale.SaleEvent
+import sales.presentation.sale.SalesScreen
+import sales.presentation.sale.SalesViewModel
 import settings.presentation.inventory.InventoryScreen
 import settings.presentation.inventory.InventoryViewModel
 import settings.presentation.product.ProductScreen
 import settings.presentation.product.ProductViewModel
-import settings.presentation.setting.SettingEvent
 import settings.presentation.setting.SettingScreen
 import settings.presentation.setting.SettingViewModel
 
@@ -46,7 +52,7 @@ fun ScreenNavHost(
     updateInventoryState:(Boolean,String)->Unit,
 
 ){
-
+    val itemViewModel = koinViewModel<ItemViewModel>()
     NavHost(navController = navHostController, startDestination = Routes.Sales.route){
         composable(route = Routes.Report.route){
             ReportScreen()
@@ -56,7 +62,12 @@ fun ScreenNavHost(
             val state = viewModel.state.collectAsState().value
             SalesScreen(
                 state = state,
-                onEvent = viewModel::onEvent
+                onEvent = viewModel::onEvent,
+                uiEvent = viewModel.uiEvent,
+                navController = navHostController,
+                snackBarHost = snackBarHost,
+                saveItems = itemViewModel::saveItems,
+                items = itemViewModel.item.value
             )
         }
 
@@ -194,6 +205,40 @@ fun ScreenNavHost(
                 billId = billId
             )
 
+        }
+
+        composable(
+            route = Routes.Payments.route
+        ){
+            val viewModel = koinViewModel<PaymentViewModel>()
+            val state = viewModel.state.collectAsState().value
+            PaymentScreen(
+                state = state,
+                onEvent = viewModel::onEvent,
+                uiEvent = viewModel.uiEvent,
+                items = itemViewModel.item.value,
+                navController = navHostController,
+                snackBarHost = snackBarHost,
+                saveItems = itemViewModel::saveItems
+            )
+
+        }
+
+        composable(
+            route = Routes.EditItem.route
+
+        ){
+//            val itemDetails = Json.decodeFromString<List<ItemDetail>>((items ?: emptyList<ItemDetail>()).toString())
+            val viewModel = koinViewModel<EditItemViewModel>()
+            val state = viewModel.state.collectAsState().value
+            EditItemScreen(
+                items = itemViewModel.item.value,
+                state = state,
+                onEvent = viewModel::onEvent,
+                uiEvent = viewModel.uiEvent,
+                navController = navHostController,
+                saveItem = itemViewModel::saveItems
+            )
         }
     }
 }

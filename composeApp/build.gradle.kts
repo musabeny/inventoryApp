@@ -10,6 +10,7 @@ plugins {
 
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
@@ -71,7 +72,9 @@ kotlin {
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
 
-            implementation("io.github.murzagalin:multiplatform-expressions-evaluator:1.1.1")
+            implementation(libs.multiplatform.expressions.evaluator.v111)
+
+            implementation (libs.kotlinx.serialization.json)
         }
     }
 }

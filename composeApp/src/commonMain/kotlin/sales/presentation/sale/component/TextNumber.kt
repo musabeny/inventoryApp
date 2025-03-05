@@ -1,4 +1,4 @@
-package sales.presentation.component
+package sales.presentation.sale.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,12 +12,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TextNumber(
+    modifier: Modifier,
     value:String
 ){
     Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
+        modifier = modifier ,
         text =value,
         style = MaterialTheme.typography.titleLarge.copy(
             color = MaterialTheme.colorScheme.primary,

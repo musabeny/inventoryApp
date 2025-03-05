@@ -1,6 +1,7 @@
-package sales.presentation
+package sales.presentation.sale
 
-import sales.domain.model.ProductCount
+import sales.domain.model.ItemDetail
+import sales.domain.model.TemporaryPrice
 import settings.domain.model.product.Product
 
 data class SaleState(
@@ -19,5 +20,7 @@ data class SaleState(
     val zType:String? = null,
     val changePrice:String = "",
     val product: Product? = null,
-    val products:List<ProductCount> = emptyList()
+    val products:List<ItemDetail> = emptyList(),
+    val showSheet:Boolean = false,
+    val tempPrice: TemporaryPrice? = null
 )
